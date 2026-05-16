@@ -4,612 +4,488 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>카드뉴스 에디터</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif; background: #f5f5f0; min-height: 100vh; }
-
-  /* 폰트 로드 */
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
-
-  /* 상단 탭 */
-  .tabs { display: flex; background: #fff; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0; z-index: 100; }
-  .tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 13px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; }
-  .tab.active { color: #111; border-bottom-color: #111; }
-
-  /* 섹션 */
-  .section { display: none; padding: 16px; }
-  .section.active { display: block; }
-
-  /* 설정 섹션 */
-  .setting-group { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-  .setting-label { font-size: 12px; font-weight: 600; color: #888; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 10px; }
-  .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-  .btn-opt { padding: 8px 14px; border-radius: 8px; border: 1.5px solid #ddd; background: #fff; font-size: 13px; color: #444; cursor: pointer; transition: all .15s; font-family: inherit; }
-  .btn-opt.active { border-color: #111; background: #111; color: #fff; }
-
-  /* 슬라이드 목록 */
-  .slide-list { display: flex; flex-direction: column; gap: 10px; }
-  .slide-item { background: #fff; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 2px solid transparent; transition: all .15s; }
-  .slide-item.active { border-color: #111; }
-  .slide-num { width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #555; flex-shrink: 0; }
-  .slide-item.active .slide-num { background: #111; color: #fff; }
-  .slide-info { flex: 1; }
-  .slide-title { font-size: 14px; font-weight: 500; color: #111; }
-  .slide-sub { font-size: 12px; color: #999; margin-top: 2px; }
-  .slide-thumb { width: 44px; height: 44px; border-radius: 8px; background: #eee; object-fit: cover; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 18px; overflow: hidden; }
-  .slide-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .add-slide-btn { background: #fff; border: 1.5px dashed #ccc; border-radius: 12px; padding: 14px; text-align: center; color: #999; font-size: 14px; cursor: pointer; font-family: inherit; width: 100%; margin-top: 4px; }
-
-  /* 에디터 */
-  .editor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .back-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #444; padding: 4px; }
-  .editor-title { font-size: 16px; font-weight: 600; }
-
-  /* 미리보기 캔버스 영역 */
-  .preview-wrap { background: #fff; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
-  .canvas-container { position: relative; width: 100%; overflow: hidden; }
-  .canvas-container canvas { display: block; width: 100%; height: auto; }
-
-  /* 컴포넌트 토글 */
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 14px; color: #333; }
-  .toggle-switch { position: relative; width: 44px; height: 24px; }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider { position: absolute; inset: 0; background: #ddd; border-radius: 24px; cursor: pointer; transition: .2s; }
-  .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
-  .toggle-switch input:checked + .toggle-slider { background: #111; }
-  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
-
-  /* 텍스트 입력 */
-  .input-group { margin-bottom: 12px; }
-  .input-label { font-size: 12px; font-weight: 600; color: #888; margin-bottom: 6px; display: block; }
-  .text-input { width: 100%; padding: 10px 12px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; color: #111; background: #fff; resize: vertical; outline: none; transition: border-color .15s; }
-  .text-input:focus { border-color: #111; }
-
-  /* 폰트/색상 */
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  select.text-input { appearance: none; cursor: pointer; }
-
-  /* 이미지 업로드 */
-  .img-upload { border: 2px dashed #ddd; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; color: #aaa; font-size: 13px; background: #fafafa; transition: all .15s; margin-bottom: 12px; }
-  .img-upload:hover { border-color: #999; background: #f5f5f5; }
-  .img-upload-input { display: none; }
-  .img-preview { width: 100%; border-radius: 10px; margin-bottom: 12px; display: none; }
-
-  /* 오버레이 설정 */
-  .range-row { display: flex; align-items: center; gap: 10px; }
-  .range-row input[type=range] { flex: 1; }
-  .range-val { font-size: 13px; color: #555; min-width: 32px; text-align: right; }
-
-  /* 내보내기 버튼 */
-  .export-btn { width: 100%; padding: 14px; background: #111; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px; }
-  .export-all-btn { width: 100%; padding: 14px; background: #fff; color: #111; border: 1.5px solid #111; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; }
-
-  /* 색상 피커 */
-  .color-row { display: flex; align-items: center; gap: 10px; }
-  .color-swatch { width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #e0e0e0; cursor: pointer; flex-shrink: 0; overflow: hidden; }
-  .color-swatch input[type=color] { width: 200%; height: 200%; margin: -50%; border: none; cursor: pointer; }
-
-  /* 위치 선택 */
-  .position-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .pos-btn { padding: 8px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 12px; text-align: center; cursor: pointer; color: #555; background: #fff; transition: all .15s; font-family: inherit; }
-  .pos-btn.active { border-color: #111; background: #111; color: #fff; }
-
-  .section-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-  .section-card-title { font-size: 13px; font-weight: 600; color: #555; margin-bottom: 12px; }
-
-  /* 빈 상태 */
-  .empty-state { text-align: center; padding: 40px 20px; color: #999; }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;background:#f2f2ee;min-height:100vh;font-size:14px}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100}
+.tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:500;color:#999;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s}
+.tab.active{color:#111;border-bottom-color:#111}
+.section{display:none;padding:16px}
+.section.active{display:block}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px}
+.card-title{font-size:11px;font-weight:700;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.btn-group{display:flex;gap:7px;flex-wrap:wrap}
+.btn-opt{padding:8px 13px;border-radius:8px;border:1.5px solid #ddd;background:#fff;font-size:13px;color:#555;cursor:pointer;transition:all .15s;font-family:inherit}
+.btn-opt.active{border-color:#111;background:#111;color:#fff}
+.lbl{font-size:11px;font-weight:700;color:#aaa;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:block}
+.inp{width:100%;padding:10px 12px;border:1.5px solid #e8e8e8;border-radius:9px;font-size:14px;font-family:inherit;color:#111;background:#fff;resize:vertical;outline:none;transition:border-color .15s}
+.inp:focus{border-color:#111}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.ig{margin-bottom:12px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f3f3f3}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:14px;color:#333}
+.sw{position:relative;width:44px;height:24px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0}
+.sl{position:absolute;inset:0;background:#ddd;border-radius:24px;cursor:pointer;transition:.2s}
+.sl:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sw input:checked+.sl{background:#111}
+.sw input:checked+.sl:before{transform:translateX(20px)}
+.range-row{display:flex;align-items:center;gap:10px}
+.range-row input[type=range]{flex:1}
+.rv{font-size:13px;color:#666;min-width:40px;text-align:right}
+.color-row{display:flex;align-items:center;gap:10px}
+.swatch{width:36px;height:36px;border-radius:9px;border:1.5px solid #e0e0e0;overflow:hidden;flex-shrink:0}
+.swatch input{width:200%;height:200%;margin:-50%;border:none;cursor:pointer}
+.preview-wrap{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:12px}
+.canvas-container{position:relative;width:100%}
+.canvas-container canvas{display:block;width:100%;height:auto}
+.img-up{border:2px dashed #ddd;border-radius:10px;padding:20px;text-align:center;cursor:pointer;color:#bbb;font-size:13px;background:#fafafa;transition:all .15s;margin-bottom:0}
+.img-up:hover{border-color:#aaa;background:#f5f5f5}
+.slide-item{background:#fff;border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;border:2px solid transparent;transition:all .15s;margin-bottom:9px}
+.slide-item.active{border-color:#111}
+.slide-num{width:28px;height:28px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#666;flex-shrink:0}
+.slide-item.active .slide-num{background:#111;color:#fff}
+.slide-info{flex:1;min-width:0}
+.slide-title-txt{font-size:14px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-sub{font-size:12px;color:#aaa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-thumb{width:44px;height:44px;border-radius:8px;background:#eee;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:18px}
+.slide-thumb img{width:100%;height:100%;object-fit:cover}
+.add-btn{width:100%;background:#fff;border:1.5px dashed #ccc;border-radius:12px;padding:14px;text-align:center;color:#aaa;font-size:14px;cursor:pointer;font-family:inherit;margin-top:4px}
+.exp-btn{width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.exp-btn2{width:100%;padding:14px;background:#fff;color:#111;border:1.5px solid #111;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px}
+.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#555;padding:2px 6px 2px 0}
+.editor-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.editor-hdr-title{font-size:16px;font-weight:700}
+.empty-state{text-align:center;padding:48px 20px;color:#ccc}
+.sep{height:1px;background:#f3f3f3;margin:8px 0 12px}
 </style>
 </head>
 <body>
 
-<!-- 상단 탭 -->
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('setup')">설정</div>
-  <div class="tab" onclick="switchTab('slides')">슬라이드</div>
-  <div class="tab" onclick="switchTab('editor')">편집</div>
+  <div class="tab active" onclick="go('setup')">설정</div>
+  <div class="tab" onclick="go('slides')">슬라이드</div>
+  <div class="tab" onclick="go('editor')">편집</div>
 </div>
 
-<!-- 설정 탭 -->
+<!-- 설정 -->
 <div class="section active" id="tab-setup">
-  <div class="setting-group">
-    <div class="setting-label">규격</div>
+  <div class="card">
+    <div class="card-title">규격</div>
     <div class="btn-group">
-      <button class="btn-opt active" onclick="setFormat(this,'1:1')" data-w="1080" data-h="1080">피드 1:1</button>
-      <button class="btn-opt" onclick="setFormat(this,'3:4')" data-w="1080" data-h="1440">피드 3:4</button>
-      <button class="btn-opt" onclick="setFormat(this,'4:5')" data-w="1080" data-h="1350">피드 4:5</button>
-      <button class="btn-opt" onclick="setFormat(this,'9:16')" data-w="1080" data-h="1920">릴스 9:16</button>
+      <button class="btn-opt active" onclick="setFmt(this)" data-w="1080" data-h="1080" data-r="1:1">피드 1:1</button>
+      <button class="btn-opt" onclick="setFmt(this)" data-w="1080" data-h="1440" data-r="3:4">피드 3:4</button>
+      <button class="btn-opt" onclick="setFmt(this)" data-w="1080" data-h="1350" data-r="4:5">피드 4:5</button>
+      <button class="btn-opt" onclick="setFmt(this)" data-w="1080" data-h="1920" data-r="9:16">릴스 9:16</button>
     </div>
   </div>
-  <div class="setting-group">
-    <div class="setting-label">기본 폰트</div>
-    <select class="text-input" id="global-font" onchange="state.globalFont=this.value">
-      <option value="Pretendard">Pretendard</option>
+  <div class="card">
+    <div class="card-title">매거진 이름</div>
+    <div class="ig"><label class="lbl">이름</label><input class="inp" id="mag-name" value="tff.office" oninput="S.magName=this.value"></div>
+    <div class="ig"><label class="lbl">크기</label>
+      <div class="range-row"><input type="range" min="20" max="60" value="32" id="mag-size" oninput="S.magSize=+this.value;document.getElementById('msv').textContent=this.value+'px'"><span class="rv" id="msv">32px</span></div>
+    </div>
+    <div class="ig"><label class="lbl">색상</label>
+      <div class="color-row"><div class="swatch"><input type="color" id="mag-color" value="#ffffff" oninput="S.magColor=this.value"></div><span style="font-size:12px;color:#aaa">우하단 고정</span></div>
+    </div>
+    <div class="ig" style="margin-bottom:0"><label class="lbl">불투명도</label>
+      <div class="range-row"><input type="range" min="10" max="100" value="70" id="mag-opacity" oninput="S.magOpacity=+this.value;document.getElementById('mov').textContent=this.value+'%'"><span class="rv" id="mov">70%</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">기본 폰트</div>
+    <select class="inp" id="global-font" onchange="S.globalFont=this.value">
+      <option value="Pretendard Variable">Pretendard</option>
       <option value="'Apple SD Gothic Neo', sans-serif">Apple SD Gothic Neo</option>
       <option value="'Noto Sans KR', sans-serif">Noto Sans KR</option>
     </select>
   </div>
-  <div class="setting-group">
-    <div class="setting-label">브랜드 색상 (선택)</div>
-    <div class="btn-group" style="align-items:center">
-      <div class="color-row">
-        <div class="color-swatch"><input type="color" id="brand-color" value="#ffffff" onchange="state.brandColor=this.value"></div>
-        <span style="font-size:13px;color:#999">텍스트 배경 색상으로 사용</span>
-      </div>
-    </div>
-  </div>
-  <button class="export-btn" onclick="switchTab('slides');addSlideIfEmpty()" style="margin-top:4px">슬라이드 만들기 →</button>
+  <button class="exp-btn" onclick="go('slides');addIfEmpty()">슬라이드 만들기 →</button>
 </div>
 
-<!-- 슬라이드 탭 -->
+<!-- 슬라이드 목록 -->
 <div class="section" id="tab-slides">
-  <div class="slide-list" id="slide-list"></div>
-  <button class="add-slide-btn" onclick="addSlide()">+ 슬라이드 추가</button>
+  <div id="slide-list"></div>
+  <button class="add-btn" onclick="addSlide()">+ 슬라이드 추가</button>
 </div>
 
-<!-- 편집 탭 -->
+<!-- 편집 -->
 <div class="section" id="tab-editor">
-  <div id="editor-empty" class="empty-state">
-    <div class="empty-icon">✏️</div>
-    <p>슬라이드 탭에서<br>편집할 슬라이드를 선택하세요</p>
-  </div>
-  <div id="editor-content" style="display:none">
-    <div class="editor-header">
-      <button class="back-btn" onclick="switchTab('slides')">←</button>
-      <div class="editor-title" id="editor-slide-title">슬라이드 1</div>
+  <div id="ed-empty" class="empty-state"><div style="font-size:36px;margin-bottom:12px">🖼</div><p style="font-size:14px">슬라이드 탭에서<br>편집할 슬라이드를 선택하세요</p></div>
+  <div id="ed-content" style="display:none">
+    <div class="editor-hdr">
+      <button class="back-btn" onclick="go('slides')">←</button>
+      <div class="editor-hdr-title" id="ed-title">슬라이드 1</div>
     </div>
 
-    <!-- 미리보기 -->
-    <div class="preview-wrap">
-      <div class="canvas-container" id="canvas-container">
-        <canvas id="preview-canvas"></canvas>
-      </div>
-    </div>
+    <div class="preview-wrap"><div class="canvas-container" id="cc"><canvas id="cv"></canvas></div></div>
 
-    <!-- 이미지 업로드 -->
-    <div class="section-card">
-      <div class="section-card-title">이미지</div>
-      <div class="img-upload" onclick="document.getElementById('img-input').click()">
-        <div style="font-size:24px;margin-bottom:6px">📷</div>
-        <div>이미지를 탭해서 업로드</div>
-        <div style="font-size:11px;margin-top:4px;color:#bbb">JPG, PNG, WebP</div>
+    <!-- 이미지 -->
+    <div class="card">
+      <div class="card-title">이미지</div>
+      <div class="img-up" onclick="document.getElementById('fi').click()">
+        <div style="font-size:26px;margin-bottom:6px">📷</div>
+        <div>탭해서 이미지 업로드</div>
+        <div style="font-size:11px;margin-top:3px;color:#ccc">JPG · PNG · WebP</div>
       </div>
-      <input type="file" id="img-input" class="img-upload-input" accept="image/*" onchange="loadImage(this)">
+      <input type="file" id="fi" style="display:none" accept="image/*" onchange="loadImg(this)">
     </div>
 
     <!-- 컴포넌트 -->
-    <div class="section-card">
-      <div class="section-card-title">컴포넌트</div>
-      <div class="toggle-row">
-        <span class="toggle-label">카피 (주 텍스트)</span>
-        <label class="toggle-switch"><input type="checkbox" id="tog-copy" checked onchange="renderSlide()"><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">설명문</span>
-        <label class="toggle-switch"><input type="checkbox" id="tog-desc" onchange="toggleDesc();renderSlide()"><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">출처 표기</span>
-        <label class="toggle-switch"><input type="checkbox" id="tog-source" onchange="renderSlide()"><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">슬라이드 번호</span>
-        <label class="toggle-switch"><input type="checkbox" id="tog-num" onchange="renderSlide()"><span class="toggle-slider"></span></label>
-      </div>
+    <div class="card">
+      <div class="card-title">컴포넌트</div>
+      <div class="toggle-row"><span class="toggle-label">카피 (주 텍스트)</span><label class="sw"><input type="checkbox" id="t-copy" checked onchange="sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">설명문 (중)</span><label class="sw"><input type="checkbox" id="t-desc" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">각주 (소)</span><label class="sw"><input type="checkbox" id="t-foot" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">슬라이드 번호</span><label class="sw"><input type="checkbox" id="t-num" onchange="sync();draw()"><span class="sl"></span></label></div>
     </div>
 
-    <!-- 텍스트 입력 -->
-    <div class="section-card">
-      <div class="section-card-title">텍스트</div>
-      <div class="input-group">
-        <label class="input-label">카피</label>
-        <textarea class="text-input" id="inp-copy" rows="2" placeholder="짧고 강렬하게" oninput="renderSlide()"></textarea>
-      </div>
-      <div class="input-group" id="desc-group" style="display:none">
-        <label class="input-label">설명문</label>
-        <textarea class="text-input" id="inp-desc" rows="3" placeholder="부연 설명을 입력하세요" oninput="renderSlide()"></textarea>
-      </div>
-      <div class="input-group" id="source-group" style="display:none">
-        <label class="input-label">출처</label>
-        <input type="text" class="text-input" id="inp-source" placeholder="© 출처 / 사진작가 등" oninput="renderSlide()">
-      </div>
+    <!-- 텍스트 -->
+    <div class="card">
+      <div class="card-title">텍스트 입력</div>
+      <div class="ig"><label class="lbl">카피</label><textarea class="inp" id="i-copy" rows="2" placeholder="짧고 강렬하게" oninput="sync();draw()"></textarea></div>
+      <div class="ig" id="g-desc" style="display:none"><label class="lbl">설명문 (중)</label><textarea class="inp" id="i-desc" rows="3" placeholder="부연 설명" oninput="sync();draw()"></textarea></div>
+      <div class="ig" id="g-foot" style="display:none;margin-bottom:0"><label class="lbl">각주 (소)</label><input class="inp" id="i-foot" placeholder="출처·각주 등 작은 텍스트" oninput="sync();draw()"></div>
     </div>
 
     <!-- 스타일 -->
-    <div class="section-card">
-      <div class="section-card-title">스타일</div>
-      <div class="row-2">
-        <div>
-          <label class="input-label">폰트</label>
-          <select class="text-input" id="slide-font" onchange="renderSlide()">
+    <div class="card">
+      <div class="card-title">스타일</div>
+
+      <div class="row2">
+        <div><label class="lbl">폰트</label>
+          <select class="inp" id="s-font" onchange="sync();draw()">
             <option value="global">기본 폰트</option>
-            <option value="Pretendard">Pretendard</option>
-            <option value="'Apple SD Gothic Neo'">Apple SD Gothic Neo</option>
+            <option value="Pretendard Variable">Pretendard</option>
+            <option value="'Apple SD Gothic Neo'">Apple SD Neo</option>
             <option value="serif">Serif</option>
           </select>
         </div>
-        <div>
-          <label class="input-label">카피 크기</label>
-          <select class="text-input" id="copy-size" onchange="renderSlide()">
-            <option value="64">작게</option>
-            <option value="80" selected>보통</option>
-            <option value="100">크게</option>
-            <option value="120">매우 크게</option>
+        <div><label class="lbl">카피 크기</label>
+          <select class="inp" id="s-csize" onchange="sync();draw()">
+            <option value="52">작게</option>
+            <option value="76" selected>보통</option>
+            <option value="84">크게</option>
+            <option value="104">매우 크게</option>
           </select>
         </div>
       </div>
-      <div class="input-group">
-        <label class="input-label">텍스트 위치</label>
-        <div class="position-grid">
-          <button class="pos-btn" onclick="setPos(this,'top-left')" data-pos="top-left">↖ 좌상</button>
-          <button class="pos-btn" onclick="setPos(this,'top-center')" data-pos="top-center">↑ 중상</button>
-          <button class="pos-btn" onclick="setPos(this,'top-right')" data-pos="top-right">↗ 우상</button>
-          <button class="pos-btn" onclick="setPos(this,'mid-left')" data-pos="mid-left">← 좌중</button>
-          <button class="pos-btn" onclick="setPos(this,'center')" data-pos="center">중앙</button>
-          <button class="pos-btn" onclick="setPos(this,'mid-right')" data-pos="mid-right">→ 우중</button>
-          <button class="pos-btn active" onclick="setPos(this,'bottom-left')" data-pos="bottom-left">↙ 좌하</button>
-          <button class="pos-btn" onclick="setPos(this,'bottom-center')" data-pos="bottom-center">↓ 중하</button>
-          <button class="pos-btn" onclick="setPos(this,'bottom-right')" data-pos="bottom-right">↘ 우하</button>
-        </div>
+
+      <div class="ig"><label class="lbl">텍스트 색상</label>
+        <div class="color-row"><div class="swatch"><input type="color" id="s-color" value="#ffffff" onchange="sync();draw()"></div><span style="font-size:12px;color:#aaa">카피·설명문·각주 공통</span></div>
       </div>
-      <div class="input-group" style="margin-top:12px">
-        <label class="input-label">오버레이 강도</label>
+
+      <div class="sep"></div>
+
+      <div class="ig"><label class="lbl">자간 (letter-spacing)</label>
         <div class="range-row">
-          <input type="range" min="0" max="90" value="50" id="overlay-opacity" oninput="document.getElementById('ov-val').textContent=this.value+'%';renderSlide()">
-          <span class="range-val" id="ov-val">50%</span>
+          <input type="range" min="-10" max="40" value="0" step="1" id="s-tracking" oninput="document.getElementById('trv').textContent=this.value+'px';sync();draw()">
+          <span class="rv" id="trv">0px</span>
         </div>
       </div>
-      <div class="input-group">
-        <label class="input-label">텍스트 색상</label>
-        <div class="color-row">
-          <div class="color-swatch"><input type="color" id="text-color" value="#ffffff" onchange="renderSlide()"></div>
-          <span style="font-size:13px;color:#999">카피·설명문 색상</span>
+      <div class="ig"><label class="lbl">카피 행간</label>
+        <div class="range-row">
+          <input type="range" min="80" max="200" value="125" step="1" id="s-lh-copy" oninput="document.getElementById('lhcv').textContent=(this.value/100).toFixed(2);sync();draw()">
+          <span class="rv" id="lhcv">1.25</span>
         </div>
+      </div>
+      <div class="ig" style="margin-bottom:0"><label class="lbl">설명문 행간</label>
+        <div class="range-row">
+          <input type="range" min="80" max="200" value="145" step="1" id="s-lh-desc" oninput="document.getElementById('lhdv').textContent=(this.value/100).toFixed(2);sync();draw()">
+          <span class="rv" id="lhdv">1.45</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="ig"><label class="lbl">오버레이 종류</label>
+        <div class="btn-group">
+          <button class="btn-opt active" onclick="setOvType(this,'gradient')" data-v="gradient">그라디언트</button>
+          <button class="btn-opt" onclick="setOvType(this,'solid')" data-v="solid">단색</button>
+          <button class="btn-opt" onclick="setOvType(this,'none')" data-v="none">없음</button>
+        </div>
+      </div>
+      <div class="ig" id="ov-color-row" style="display:none"><label class="lbl">오버레이 색상</label>
+        <div class="color-row"><div class="swatch"><input type="color" id="s-ovcolor" value="#000000" onchange="sync();draw()"></div></div>
+      </div>
+      <div class="ig"><label class="lbl">오버레이 강도</label>
+        <div class="range-row"><input type="range" min="0" max="95" value="55" id="s-opacity" oninput="document.getElementById('opv').textContent=this.value+'%';sync();draw()"><span class="rv" id="opv">55%</span></div>
+      </div>
+      <div class="ig" style="margin-bottom:0"><label class="lbl">오버레이 시작 위치</label>
+        <div class="range-row"><input type="range" min="0" max="100" value="45" id="s-ovstart" oninput="document.getElementById('osv').textContent=this.value+'%';sync();draw()"><span class="rv" id="osv">45%</span></div>
       </div>
     </div>
 
-    <!-- 내보내기 -->
-    <button class="export-btn" onclick="exportSlide()">💾 이 슬라이드 저장</button>
-    <button class="export-all-btn" onclick="exportAll()">📦 전체 저장</button>
+    <button class="exp-btn" onclick="exportOne()">💾 이 슬라이드 저장</button>
+    <button class="exp-btn2" onclick="exportAll()">📦 전체 저장</button>
   </div>
 </div>
 
 <script>
-const state = {
-  format: { w: 1080, h: 1080, ratio: '1:1' },
-  globalFont: 'Pretendard',
-  brandColor: '#ffffff',
-  slides: [],
-  currentSlide: null,
-  currentImage: null,
+const MAG_FONT="'Barlow Condensed','Arial Narrow',sans-serif";
+const S={
+  fmt:{w:1080,h:1080,r:'1:1'},
+  globalFont:'Pretendard Variable',
+  magName:'tff.office', magSize:32, magColor:'#ffffff', magOpacity:70,
+  slides:[], cur:null,
 };
 
-// 초기 슬라이드
-function init() {
-  addSlide('표지');
-  renderSlideList();
-}
-
-function addSlide(name) {
-  const idx = state.slides.length + 1;
-  state.slides.push({
-    id: Date.now() + Math.random(),
-    name: name || (idx === 1 ? '표지' : `슬라이드 ${idx}`),
-    image: null,
-    copy: '',
-    desc: '',
-    source: '',
-    showCopy: true,
-    showDesc: false,
-    showSource: false,
-    showNum: false,
-    font: 'global',
-    copySize: 80,
-    pos: 'bottom-left',
-    overlayOpacity: 50,
-    textColor: '#ffffff',
-  });
-  renderSlideList();
-}
-
-function addSlideIfEmpty() {
-  if (state.slides.length === 0) addSlide('표지');
-}
-
-function renderSlideList() {
-  const list = document.getElementById('slide-list');
-  list.innerHTML = state.slides.map((s, i) => `
-    <div class="slide-item ${state.currentSlide?.id === s.id ? 'active' : ''}" onclick="selectSlide(${i})">
-      <div class="slide-num">${i + 1}</div>
-      <div class="slide-info">
-        <div class="slide-title">${s.name}</div>
-        <div class="slide-sub">${s.copy ? s.copy.slice(0,20) + (s.copy.length>20?'…':'') : '텍스트 없음'}</div>
-      </div>
-      <div class="slide-thumb">
-        ${s.image ? `<img src="${s.image}">` : '🖼'}
-      </div>
-    </div>
-  `).join('');
-}
-
-function selectSlide(idx) {
-  state.currentSlide = state.slides[idx];
-  state.currentImage = state.currentSlide.image;
-  switchTab('editor');
-  loadSlideToEditor();
-}
-
-function loadSlideToEditor() {
-  const s = state.currentSlide;
-  if (!s) return;
-  document.getElementById('editor-empty').style.display = 'none';
-  document.getElementById('editor-content').style.display = 'block';
-  document.getElementById('editor-slide-title').textContent = s.name;
-  document.getElementById('inp-copy').value = s.copy;
-  document.getElementById('inp-desc').value = s.desc;
-  document.getElementById('inp-source').value = s.source;
-  document.getElementById('tog-copy').checked = s.showCopy;
-  document.getElementById('tog-desc').checked = s.showDesc;
-  document.getElementById('tog-source').checked = s.showSource;
-  document.getElementById('tog-num').checked = s.showNum;
-  document.getElementById('slide-font').value = s.font;
-  document.getElementById('copy-size').value = s.copySize;
-  document.getElementById('overlay-opacity').value = s.overlayOpacity;
-  document.getElementById('ov-val').textContent = s.overlayOpacity + '%';
-  document.getElementById('text-color').value = s.textColor;
-  document.querySelectorAll('.pos-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === s.pos));
-  document.getElementById('desc-group').style.display = s.showDesc ? 'block' : 'none';
-  document.getElementById('source-group').style.display = s.showSource ? 'block' : 'none';
-  renderSlide();
-}
-
-function toggleDesc() {
-  const show = document.getElementById('tog-desc').checked;
-  document.getElementById('desc-group').style.display = show ? 'block' : 'none';
-  const showSrc = document.getElementById('tog-source').checked;
-  document.getElementById('source-group').style.display = showSrc ? 'block' : 'none';
-}
-
-function setFormat(btn, ratio) {
-  document.querySelectorAll('.btn-opt').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  state.format = { w: +btn.dataset.w, h: +btn.dataset.h, ratio };
-  if (state.currentSlide) renderSlide();
-}
-
-function setPos(btn, pos) {
-  document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (state.currentSlide) { state.currentSlide.pos = pos; renderSlide(); }
-}
-
-function loadImage(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    state.currentImage = e.target.result;
-    if (state.currentSlide) {
-      state.currentSlide.image = e.target.result;
-      renderSlide();
-      renderSlideList();
-    }
+function mkSlide(name){
+  return{
+    id:Date.now()+Math.random(), name,
+    img:null, copy:'', desc:'', foot:'',
+    showCopy:true, showDesc:false, showFoot:false, showNum:false,
+    font:'global', csize:76, textColor:'#ffffff',
+    tracking:0, lhCopy:1.25, lhDesc:1.45,
+    ovType:'gradient', ovColor:'#000000', opacity:55, ovStart:45,
   };
-  reader.readAsDataURL(file);
 }
 
-function saveCurrentSlideState() {
-  if (!state.currentSlide) return;
-  const s = state.currentSlide;
-  s.copy = document.getElementById('inp-copy').value;
-  s.desc = document.getElementById('inp-desc').value;
-  s.source = document.getElementById('inp-source').value;
-  s.showCopy = document.getElementById('tog-copy').checked;
-  s.showDesc = document.getElementById('tog-desc').checked;
-  s.showSource = document.getElementById('tog-source').checked;
-  s.showNum = document.getElementById('tog-num').checked;
-  s.font = document.getElementById('slide-font').value;
-  s.copySize = +document.getElementById('copy-size').value;
-  s.overlayOpacity = +document.getElementById('overlay-opacity').value;
-  s.textColor = document.getElementById('text-color').value;
+function addSlide(name){
+  const n=name||(S.slides.length===0?'표지':`슬라이드 ${S.slides.length+1}`);
+  S.slides.push(mkSlide(n));
+  renderList();
+}
+function addIfEmpty(){if(!S.slides.length)addSlide();}
+
+function renderList(){
+  document.getElementById('slide-list').innerHTML=S.slides.map((s,i)=>`
+    <div class="slide-item ${S.cur?.id===s.id?'active':''}" onclick="selSlide(${i})">
+      <div class="slide-num">${i+1}</div>
+      <div class="slide-info">
+        <div class="slide-title-txt">${s.name}</div>
+        <div class="slide-sub">${s.copy?s.copy.slice(0,22)+(s.copy.length>22?'…':''):'텍스트 없음'}</div>
+      </div>
+      <div class="slide-thumb">${s.img?`<img src="${s.img}">`:'🖼'}</div>
+    </div>`).join('');
 }
 
-function renderSlide() {
-  saveCurrentSlideState();
-  if (!state.currentSlide) return;
-  const s = state.currentSlide;
-  const { w, h } = state.format;
-  const canvas = document.getElementById('preview-canvas');
-  const container = document.getElementById('canvas-container');
-  const displayW = container.offsetWidth || 340;
-  canvas.width = w;
-  canvas.height = h;
-  canvas.style.width = displayW + 'px';
-  canvas.style.height = (displayW * h / w) + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, w, h);
+function selSlide(i){S.cur=S.slides[i];go('editor');loadEditor();}
 
-  // 배경
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillRect(0, 0, w, h);
+function v(id){return document.getElementById(id);}
+function setV(id,val){v(id).value=val;}
 
-  const font = s.font === 'global' ? state.globalFont : s.font;
+function loadEditor(){
+  if(!S.cur)return;
+  v('ed-empty').style.display='none';
+  v('ed-content').style.display='block';
+  v('ed-title').textContent=S.cur.name;
+  const s=S.cur;
+  setV('i-copy',s.copy); setV('i-desc',s.desc); setV('i-foot',s.foot);
+  v('t-copy').checked=s.showCopy; v('t-desc').checked=s.showDesc;
+  v('t-foot').checked=s.showFoot; v('t-num').checked=s.showNum;
+  setV('s-font',s.font); setV('s-csize',s.csize); setV('s-color',s.textColor);
+  setV('s-tracking',s.tracking); v('trv').textContent=s.tracking+'px';
+  setV('s-lh-copy',Math.round(s.lhCopy*100)); v('lhcv').textContent=s.lhCopy.toFixed(2);
+  setV('s-lh-desc',Math.round(s.lhDesc*100)); v('lhdv').textContent=s.lhDesc.toFixed(2);
+  setV('s-opacity',s.opacity); v('opv').textContent=s.opacity+'%';
+  setV('s-ovstart',s.ovStart); v('osv').textContent=s.ovStart+'%';
+  setV('s-ovcolor',s.ovColor||'#000000');
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===s.ovType));
+  v('ov-color-row').style.display=s.ovType==='solid'?'block':'none';
+  showHide(); draw();
+}
 
-  const drawText = () => {
-    const pad = 60;
-    const pos = s.pos || 'bottom-left';
-    const isBottom = pos.startsWith('bottom');
-    const isTop = pos.startsWith('top');
-    const isMid = pos.startsWith('mid') || pos === 'center';
-    const isLeft = pos.endsWith('left');
-    const isRight = pos.endsWith('right');
-    const isCenter = pos.endsWith('center') || pos === 'center';
+function showHide(){
+  v('g-desc').style.display=v('t-desc').checked?'block':'none';
+  v('g-foot').style.display=v('t-foot').checked?'block':'none';
+}
 
+function setOvType(btn,val){
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(S.cur){S.cur.ovType=val;sync();}
+  v('ov-color-row').style.display=val==='solid'?'block':'none';
+  draw();
+}
+
+function sync(){
+  if(!S.cur)return;
+  const s=S.cur;
+  s.copy=v('i-copy').value; s.desc=v('i-desc').value; s.foot=v('i-foot').value;
+  s.showCopy=v('t-copy').checked; s.showDesc=v('t-desc').checked;
+  s.showFoot=v('t-foot').checked; s.showNum=v('t-num').checked;
+  s.font=v('s-font').value; s.csize=+v('s-csize').value; s.textColor=v('s-color').value;
+  s.tracking=+v('s-tracking').value;
+  s.lhCopy=+v('s-lh-copy').value/100;
+  s.lhDesc=+v('s-lh-desc').value/100;
+  s.opacity=+v('s-opacity').value; s.ovStart=+v('s-ovstart').value;
+  s.ovColor=v('s-ovcolor').value;
+  const activeOv=document.querySelector('[data-v].active');
+  if(activeOv)s.ovType=activeOv.dataset.v;
+}
+
+function setFmt(btn){
+  document.querySelectorAll('#tab-setup .btn-opt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  S.fmt={w:+btn.dataset.w,h:+btn.dataset.h,r:btn.dataset.r};
+  if(S.cur)draw();
+}
+
+function loadImg(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{if(S.cur){S.cur.img=e.target.result;draw();renderList();}};
+  r.readAsDataURL(f);
+}
+
+function draw(){
+  if(!S.cur)return;
+  const s=S.cur;
+  const{w,h}=S.fmt;
+  const cv=v('cv'),cc=v('cc');
+  cv.width=w;cv.height=h;
+  const dw=cc.offsetWidth||340;
+  cv.style.width=dw+'px';cv.style.height=(dw*h/w)+'px';
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#1a1a1a';ctx.fillRect(0,0,w,h);
+  const fontFam=s.font==='global'?S.globalFont:s.font;
+  const PAD=72;
+  const tracking=(s.tracking||0)+'px';
+
+  const doDraw=()=>{
     // 오버레이
-    const ov = s.overlayOpacity / 100;
-    const grad = ctx.createLinearGradient(0, isBottom ? h * 0.45 : isTop ? 0 : h * 0.2, 0, isBottom ? h : isTop ? h * 0.55 : h * 0.8);
-    grad.addColorStop(0, `rgba(0,0,0,0)`);
-    grad.addColorStop(1, `rgba(0,0,0,${ov})`);
-    if (isBottom || isMid) {
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, isBottom ? h * 0.45 : h * 0.2, w, h);
-    }
-    if (isTop) {
-      const gTop = ctx.createLinearGradient(0, 0, 0, h * 0.55);
-      gTop.addColorStop(0, `rgba(0,0,0,${ov})`);
-      gTop.addColorStop(1, `rgba(0,0,0,0)`);
-      ctx.fillStyle = gTop;
-      ctx.fillRect(0, 0, w, h * 0.55);
+    const ov=s.opacity/100;
+    if(s.ovType==='gradient'){
+      const sy=h*(s.ovStart/100);
+      const g=ctx.createLinearGradient(0,sy,0,h);
+      g.addColorStop(0,'rgba(0,0,0,0)');
+      g.addColorStop(1,`rgba(0,0,0,${ov})`);
+      ctx.fillStyle=g;ctx.fillRect(0,sy,w,h-sy);
+    }else if(s.ovType==='solid'){
+      const c=hexRgb(s.ovColor||'#000000');
+      ctx.fillStyle=`rgba(${c.r},${c.g},${c.b},${ov})`;
+      ctx.fillRect(0,0,w,h);
     }
 
-    const tc = s.textColor || '#ffffff';
-    let y;
-    if (isBottom) y = h - pad - (s.showSource ? 50 : 0);
-    else if (isTop) y = pad + s.copySize;
-    else y = h / 2;
+    const tc=s.textColor||'#ffffff';
+    const lhC=s.csize*(s.lhCopy||1.25);
+    const descSz=Math.round(s.csize*0.62);
+    const footSz=Math.round(s.csize*0.37);
+    const lhD=descSz*(s.lhDesc||1.45);
 
-    const align = isLeft ? 'left' : isRight ? 'right' : 'center';
-    ctx.textAlign = align;
-    const x = isLeft ? pad : isRight ? w - pad : w / 2;
+    // 매거진명 (우하단)
+    ctx.letterSpacing='1px';
+    ctx.font=`600 ${S.magSize*2}px ${MAG_FONT}`;
+    ctx.textAlign='right';
+    ctx.fillStyle=hexAlpha(S.magColor,S.magOpacity/100);
+    ctx.fillText(S.magName,w-PAD,h-PAD+S.magSize*0.8);
 
-    // 슬라이드 번호
-    if (s.showNum) {
-      const idx = state.slides.findIndex(sl => sl.id === s.id) + 1;
-      ctx.font = `400 32px ${font}`;
-      ctx.fillStyle = tc;
-      ctx.globalAlpha = 0.6;
-      ctx.fillText(`${idx} / ${state.slides.length}`, x, isBottom ? h - 36 : 36);
-      ctx.globalAlpha = 1;
-    }
+    // 자간 적용
+    ctx.letterSpacing=tracking;
+    ctx.textAlign='left';
 
-    // 출처
-    if (s.showSource && s.source) {
-      ctx.font = `400 28px ${font}`;
-      ctx.fillStyle = tc;
-      ctx.globalAlpha = 0.55;
-      ctx.fillText(s.source, x, isBottom ? h - 36 : h - 36);
-      ctx.globalAlpha = 1;
-    }
-
-    // 설명문
-    if (s.showDesc && s.desc) {
-      const dSize = Math.round(s.copySize * 0.45);
-      ctx.font = `400 ${dSize}px ${font}`;
-      ctx.fillStyle = tc;
-      ctx.globalAlpha = 0.8;
-      const dLines = wrapText(ctx, s.desc, w - pad * 2);
-      const lineH = dSize * 1.55;
-      const totalH = dLines.length * lineH;
-      let dy = isBottom ? y - totalH - 10 : isTop ? y + s.copySize * 1.3 : y + s.copySize * 0.7;
-      dLines.forEach(ln => { ctx.fillText(ln, x, dy); dy += lineH; });
-      if (isBottom) y -= totalH + 16;
-      ctx.globalAlpha = 1;
-    }
+    // 각주 Y
+    const footY=h-PAD+(footSz*0.3);
+    // 카피·설명문 쌓기 시작점
+    let curY=h-PAD*2;
+    if(s.showFoot&&s.foot)curY-=footSz*1.6;
 
     // 카피
-    if (s.showCopy && s.copy) {
-      ctx.font = `700 ${s.copySize}px ${font}`;
-      ctx.fillStyle = tc;
-      const lines = wrapText(ctx, s.copy, w - pad * 2);
-      const lineH = s.copySize * 1.3;
-      let cy = isBottom ? y - (lines.length - 1) * lineH : y;
-      lines.forEach(ln => { ctx.fillText(ln, x, cy); cy += lineH; });
+    let copyLines=[];
+    if(s.showCopy&&s.copy){
+      ctx.font=`700 ${s.csize}px ${fontFam}`;
+      copyLines=wrap(ctx,s.copy,w-PAD*2);
+      const startY=curY-(copyLines.length-1)*lhC;
+      ctx.fillStyle=tc;
+      copyLines.forEach((ln,i)=>ctx.fillText(ln,PAD,startY+i*lhC));
+      curY=startY-lhC*0.4;
+    }
+
+    // 설명문(중)
+    if(s.showDesc&&s.desc){
+      ctx.font=`700 ${descSz}px ${fontFam}`;
+      const dLines=wrap(ctx,s.desc,w-PAD*2);
+      const startY=curY-(dLines.length-1)*lhD;
+      ctx.fillStyle=tc;ctx.globalAlpha=0.9;
+      dLines.forEach((ln,i)=>ctx.fillText(ln,PAD,startY+i*lhD));
+      ctx.globalAlpha=1;
+    }
+
+    // 각주(소)
+    if(s.showFoot&&s.foot){
+      ctx.font=`400 ${footSz}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=1;
+      ctx.fillText(s.foot,PAD,footY);
+      ctx.globalAlpha=1;
+    }
+
+    // 슬라이드 번호 (우상단)
+    if(s.showNum){
+      const idx=S.slides.findIndex(x=>x.id===s.id)+1;
+      ctx.font=`400 ${footSz}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=0.5;ctx.textAlign='right';
+      ctx.fillText(`${idx} / ${S.slides.length}`,w-PAD,PAD);
+      ctx.textAlign='left';ctx.globalAlpha=1;
     }
   };
 
-  if (state.currentImage) {
-    const img = new Image();
-    img.onload = () => {
-      // 커버 방식으로 이미지 그리기
-      const scale = Math.max(w / img.width, h / img.height);
-      const iw = img.width * scale;
-      const ih = img.height * scale;
-      const ix = (w - iw) / 2;
-      const iy = (h - ih) / 2;
-      ctx.drawImage(img, ix, iy, iw, ih);
-      drawText();
+  if(s.img){
+    const img=new Image();
+    img.onload=()=>{
+      const sc=Math.max(w/img.width,h/img.height);
+      const iw=img.width*sc,ih=img.height*sc;
+      ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
+      doDraw();
     };
-    img.src = state.currentImage;
-  } else {
-    drawText();
-  }
+    img.src=s.img;
+  }else doDraw();
 }
 
-function wrapText(ctx, text, maxW) {
-  const words = text.split('');
-  const lines = [];
-  let line = '';
-  // 줄바꿈 문자 처리
-  const parts = text.split('\n');
-  const result = [];
-  parts.forEach(part => {
-    const chars = part.split('');
-    let ln = '';
-    chars.forEach(ch => {
-      const test = ln + ch;
-      if (ctx.measureText(test).width > maxW && ln) {
-        result.push(ln);
-        ln = ch;
-      } else ln = test;
-    });
-    if (ln) result.push(ln);
+function wrap(ctx,text,maxW){
+  const res=[];
+  text.split('\n').forEach(part=>{
+    let ln='';
+    for(const ch of part){
+      const t=ln+ch;
+      if(ctx.measureText(t).width>maxW&&ln){res.push(ln);ln=ch;}
+      else ln=t;
+    }
+    if(ln)res.push(ln);
   });
-  return result.length ? result : [''];
+  return res.length?res:[''];
 }
+function hexRgb(hex){return{r:parseInt(hex.slice(1,3),16),g:parseInt(hex.slice(3,5),16),b:parseInt(hex.slice(5,7),16)};}
+function hexAlpha(hex,a){const{r,g,b}=hexRgb(hex);return`rgba(${r},${g},${b},${a})`;}
 
-function exportSlide() {
-  renderSlide();
-  setTimeout(() => {
-    const canvas = document.getElementById('preview-canvas');
-    const link = document.createElement('a');
-    const idx = state.slides.findIndex(s => s.id === state.currentSlide?.id) + 1;
-    link.download = `card_${idx}_${state.format.ratio.replace(':','x')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }, 200);
+function exportOne(){
+  sync();draw();
+  setTimeout(()=>{
+    const a=document.createElement('a');
+    const idx=S.slides.findIndex(x=>x.id===S.cur?.id)+1;
+    a.download=`card_${idx}_${S.fmt.r.replace(':','x')}.png`;
+    a.href=v('cv').toDataURL('image/png');a.click();
+  },300);
 }
-
-function exportAll() {
-  state.slides.forEach((slide, i) => {
-    const prev = state.currentSlide;
-    state.currentSlide = slide;
-    state.currentImage = slide.image;
-    setTimeout(() => {
-      renderSlide();
-      setTimeout(() => {
-        const canvas = document.getElementById('preview-canvas');
-        const link = document.createElement('a');
-        link.download = `card_${i+1}_${state.format.ratio.replace(':','x')}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      }, 300);
-      state.currentSlide = prev;
-      state.currentImage = prev?.image || null;
-    }, i * 600);
+function exportAll(){
+  const prev=S.cur;
+  S.slides.forEach((sl,i)=>{
+    setTimeout(()=>{
+      S.cur=sl;loadEditor();
+      setTimeout(()=>{
+        const a=document.createElement('a');
+        a.download=`card_${i+1}_${S.fmt.r.replace(':','x')}.png`;
+        a.href=v('cv').toDataURL('image/png');a.click();
+        if(i===S.slides.length-1){S.cur=prev;loadEditor();}
+      },350);
+    },i*700);
   });
 }
 
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', ['setup','slides','editor'][i] === name);
+function go(name){
+  ['setup','slides','editor'].forEach((n,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',n===name);
+    document.querySelectorAll('.section')[i].classList.toggle('active',n===name);
   });
-  document.querySelectorAll('.section').forEach((s, i) => {
-    s.classList.toggle('active', ['tab-setup','tab-slides','tab-editor'][i] === 'tab-' + name);
-  });
-  if (name === 'slides') renderSlideList();
-  if (name === 'editor' && state.currentSlide) renderSlide();
+  if(name==='slides')renderList();
+  if(name==='editor'&&S.cur)draw();
 }
 
-// source-group toggle fix
-document.getElementById('tog-source').addEventListener('change', function() {
-  document.getElementById('source-group').style.display = this.checked ? 'block' : 'none';
-  renderSlide();
-});
-
-init();
+addSlide('표지');
 </script>
 </body>
 </html>
