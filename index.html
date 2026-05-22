@@ -137,6 +137,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
     <!-- 컴포넌트 -->
     <div class="card">
       <div class="card-title">컴포넌트</div>
+      <div class="toggle-row"><span class="toggle-label">가로형 이미지 레이아웃</span><label class="sw"><input type="checkbox" id="t-wide" onchange="sync();draw()"><span class="sl"></span></label></div>
       <div class="toggle-row"><span class="toggle-label">카피 (주 텍스트)</span><label class="sw"><input type="checkbox" id="t-copy" checked onchange="sync();draw()"><span class="sl"></span></label></div>
       <div class="toggle-row"><span class="toggle-label">설명문 (중)</span><label class="sw"><input type="checkbox" id="t-desc" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
       <div class="toggle-row"><span class="toggle-label">각주 (소)</span><label class="sw"><input type="checkbox" id="t-foot" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
@@ -275,7 +276,7 @@ function loadEditor(){
   v('ed-title').textContent=S.cur.name;
   const s=S.cur;
   setV('i-copy',s.copy); setV('i-desc',s.desc); setV('i-foot',s.foot);
-  v('t-copy').checked=s.showCopy; v('t-desc').checked=s.showDesc;
+  v('t-wide').checked=s.wide||false; v('t-desc').checked=s.showDesc;
   v('t-foot').checked=s.showFoot; v('t-num').checked=s.showNum;
   setV('s-font',s.font); setV('s-csize',s.csize); setV('s-color',s.textColor);
   setV('s-tracking',s.tracking); v('trv').textContent=s.tracking+'px';
@@ -308,6 +309,7 @@ function sync(){
   s.copy=v('i-copy').value; s.desc=v('i-desc').value; s.foot=v('i-foot').value;
   s.showCopy=v('t-copy').checked; s.showDesc=v('t-desc').checked;
   s.showFoot=v('t-foot').checked; s.showNum=v('t-num').checked;
+  s.wide=v('t-wide').checked;
   s.font=v('s-font').value; s.csize=+v('s-csize').value; s.textColor=v('s-color').value;
   s.tracking=+v('s-tracking').value;
   s.lhCopy=+v('s-lh-copy').value/100;
@@ -427,10 +429,21 @@ function draw(){
   if(s.img){
     const img=new Image();
     img.onload=()=>{
-      const sc=Math.max(w/img.width,h/img.height);
-      const iw=img.width*sc,ih=img.height*sc;
-      ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
-      doDraw();
+      if(s.wide){
+        // 가로형: 흰 배경 + 이미지 원본 비율 유지하며 가로 꽉 채워 세로 중앙 배치
+        ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h);
+        const imgW=w;
+        const imgH=Math.round(img.height*(w/img.width));
+        const imgY=Math.round((h-imgH)/2);
+        ctx.drawImage(img,0,imgY,imgW,imgH);
+        // 텍스트는 이미지 아래 영역에 표시
+        doDrawWide(imgY,imgH);
+      } else {
+        const sc=Math.max(w/img.width,h/img.height);
+        const iw=img.width*sc,ih=img.height*sc;
+        ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
+        doDraw();
+      }
     };
     img.src=s.img;
   }else doDraw();
