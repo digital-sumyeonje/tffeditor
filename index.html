@@ -368,16 +368,8 @@ function onZoom(){
   draw();
 }
 
-// 이미지가 캔버스 밖으로 나가지 않도록 cropX/Y 클램핑
-function clampCrop(s){
-  if(!s.imgEl)return;
-  const{w,h}=S.fmt;
-  const sc=Math.max(w/s.imgEl.width, h/s.imgEl.height)*s.cropZoom;
-  const iw=s.imgEl.width*sc, ih=s.imgEl.height*sc;
-  const maxX=(iw-w)/2, maxY=(ih-h)/2;
-  s.cropX=Math.max(-maxX, Math.min(maxX, s.cropX));
-  s.cropY=Math.max(-maxY, Math.min(maxY, s.cropY));
-}
+// 클램핑 없음 — 자유롭게 이동 가능
+function clampCrop(s){ }
 
 // ── 드래그 / 핀치 ────────────────────────────────────────
 const DRAG={active:false, startX:0, startY:0, origX:0, origY:0};
