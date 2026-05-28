@@ -3,71 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>카드뉴스 에디터</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<title>tff 카드뉴스 에디터</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600&display=swap" rel="stylesheet">
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;background:#f2f2ee;min-height:100vh;font-size:14px}
-.tabs{display:flex;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100}
-.tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:500;color:#999;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s}
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo',sans-serif;background:#f0efeb;min-height:100vh;font-size:14px;color:#111}
+.tabs{display:flex;background:#fff;border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:100}
+.tab{flex:1;padding:14px 4px;text-align:center;font-size:12px;font-weight:600;color:#bbb;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;letter-spacing:.02em}
 .tab.active{color:#111;border-bottom-color:#111}
-.section{display:none;padding:16px}
+.section{display:none;padding:14px}
 .section.active{display:block}
-.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px}
-.card-title{font-size:11px;font-weight:700;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
-.btn-group{display:flex;gap:7px;flex-wrap:wrap}
-.btn-opt{padding:8px 13px;border-radius:8px;border:1.5px solid #ddd;background:#fff;font-size:13px;color:#555;cursor:pointer;transition:all .15s;font-family:inherit}
+.card{background:#fff;border-radius:14px;padding:15px;margin-bottom:10px}
+.card-title{font-size:10px;font-weight:700;color:#bbb;letter-spacing:.1em;text-transform:uppercase;margin-bottom:11px}
+.btn-group{display:flex;gap:6px;flex-wrap:wrap}
+.btn-opt{padding:7px 12px;border-radius:8px;border:1.5px solid #e8e8e8;background:#fff;font-size:12px;color:#666;cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.3}
 .btn-opt.active{border-color:#111;background:#111;color:#fff}
-.lbl{font-size:11px;font-weight:700;color:#aaa;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:block}
-.inp{width:100%;padding:10px 12px;border:1.5px solid #e8e8e8;border-radius:9px;font-size:14px;font-family:inherit;color:#111;background:#fff;resize:vertical;outline:none;transition:border-color .15s}
+.lbl{font-size:10px;font-weight:700;color:#bbb;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;display:block}
+.inp{width:100%;padding:9px 11px;border:1.5px solid #e8e8e8;border-radius:8px;font-size:13px;font-family:inherit;color:#111;background:#fff;resize:vertical;outline:none;transition:border-color .15s}
 .inp:focus{border-color:#111}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.ig{margin-bottom:12px}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f3f3f3}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.ig{margin-bottom:10px}
+.ig:last-child{margin-bottom:0}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5}
 .toggle-row:last-child{border-bottom:none}
-.toggle-label{font-size:14px;color:#333}
-.sw{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-label{font-size:13px;color:#333}
+.toggle-sub{font-size:11px;color:#bbb;margin-top:1px}
+.sw{position:relative;width:42px;height:23px;flex-shrink:0}
 .sw input{opacity:0;width:0;height:0}
-.sl{position:absolute;inset:0;background:#ddd;border-radius:24px;cursor:pointer;transition:.2s}
-.sl:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sl{position:absolute;inset:0;background:#e0e0e0;border-radius:23px;cursor:pointer;transition:.2s}
+.sl:before{content:'';position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .sw input:checked+.sl{background:#111}
-.sw input:checked+.sl:before{transform:translateX(20px)}
-.range-row{display:flex;align-items:center;gap:10px}
-.range-row input[type=range]{flex:1}
-.rv{font-size:13px;color:#666;min-width:40px;text-align:right}
-.color-row{display:flex;align-items:center;gap:10px}
-.swatch{width:36px;height:36px;border-radius:9px;border:1.5px solid #e0e0e0;overflow:hidden;flex-shrink:0}
+.sw input:checked+.sl:before{transform:translateX(19px)}
+.range-row{display:flex;align-items:center;gap:9px}
+.range-row input[type=range]{flex:1;accent-color:#111}
+.rv{font-size:12px;color:#888;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.color-row{display:flex;align-items:center;gap:9px}
+.swatch{width:34px;height:34px;border-radius:8px;border:1.5px solid #e8e8e8;overflow:hidden;flex-shrink:0}
 .swatch input{width:200%;height:200%;margin:-50%;border:none;cursor:pointer}
-
-/* 이미지 크롭 인터랙션 */
-.crop-wrap{position:relative;width:100%;overflow:hidden;border-radius:10px;background:#111;touch-action:none;cursor:grab;user-select:none}
+.preview-wrap{background:#e8e8e3;border-radius:14px;overflow:hidden;margin-bottom:10px;position:relative}
+.crop-wrap{position:relative;width:100%;touch-action:none;cursor:grab;user-select:none}
 .crop-wrap:active{cursor:grabbing}
 .crop-wrap canvas{display:block;width:100%;height:auto;pointer-events:none}
-.crop-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;opacity:1;transition:opacity .4s}
+.crop-hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;transition:opacity .5s}
 .crop-hint.hide{opacity:0}
-
-.preview-wrap{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:12px}
-.img-up{border:2px dashed #ddd;border-radius:10px;padding:20px;text-align:center;cursor:pointer;color:#bbb;font-size:13px;background:#fafafa;transition:all .15s;margin-bottom:0}
-.img-up:hover{border-color:#aaa;background:#f5f5f5}
-.slide-item{background:#fff;border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;border:2px solid transparent;transition:all .15s;margin-bottom:9px}
+.slide-item{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;border:2px solid transparent;transition:all .15s;margin-bottom:8px}
 .slide-item.active{border-color:#111}
-.slide-num{width:28px;height:28px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#666;flex-shrink:0}
+.slide-num{width:26px;height:26px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#888;flex-shrink:0}
 .slide-item.active .slide-num{background:#111;color:#fff}
 .slide-info{flex:1;min-width:0}
-.slide-title-txt{font-size:14px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slide-sub{font-size:12px;color:#aaa;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slide-thumb{width:44px;height:44px;border-radius:8px;background:#eee;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:18px}
+.slide-title-txt{font-size:13px;font-weight:600;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-sub{font-size:11px;color:#bbb;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-thumb{width:40px;height:40px;border-radius:7px;background:#f0f0f0;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:16px}
 .slide-thumb img{width:100%;height:100%;object-fit:cover}
-.add-btn{width:100%;background:#fff;border:1.5px dashed #ccc;border-radius:12px;padding:14px;text-align:center;color:#aaa;font-size:14px;cursor:pointer;font-family:inherit;margin-top:4px}
-.exp-btn{width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
-.exp-btn2{width:100%;padding:14px;background:#fff;color:#111;border:1.5px solid #111;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px}
-.back-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#555;padding:2px 6px 2px 0}
-.editor-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.editor-hdr-title{font-size:16px;font-weight:700}
-.empty-state{text-align:center;padding:48px 20px;color:#ccc}
-.sep{height:1px;background:#f3f3f3;margin:8px 0 12px}
-.reset-btn{background:none;border:1.5px solid #ddd;border-radius:8px;padding:7px 13px;font-size:12px;color:#888;cursor:pointer;font-family:inherit;margin-top:8px}
+.add-btn{width:100%;background:#fff;border:1.5px dashed #ddd;border-radius:12px;padding:13px;text-align:center;color:#bbb;font-size:13px;cursor:pointer;font-family:inherit}
+.exp-btn{width:100%;padding:13px;background:#111;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.exp-btn2{width:100%;padding:13px;background:#fff;color:#111;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:7px}
+.back-btn{background:none;border:none;font-size:18px;cursor:pointer;color:#666;padding:2px 8px 2px 0}
+.editor-hdr{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.editor-hdr-title{font-size:15px;font-weight:700}
+.empty-state{text-align:center;padding:52px 20px;color:#ccc}
+.sep{height:1px;background:#f5f5f5;margin:10px 0}
+.reset-btn{background:none;border:1.5px solid #eee;border-radius:7px;padding:6px 12px;font-size:11px;color:#aaa;cursor:pointer;font-family:inherit;margin-top:7px}
+/* 레이아웃 프리셋 버튼 */
+.layout-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.layout-btn{padding:10px 8px;border-radius:9px;border:1.5px solid #e8e8e8;background:#fff;font-size:11px;color:#666;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;line-height:1.5}
+.layout-btn .layout-icon{font-size:18px;margin-bottom:3px}
+.layout-btn.active{border-color:#111;background:#111;color:#fff}
 </style>
 </head>
 <body>
@@ -90,24 +92,64 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
     </div>
   </div>
   <div class="card">
-    <div class="card-title">매거진 이름</div>
-    <div class="ig"><label class="lbl">이름</label><input class="inp" id="mag-name" value="tff.office" oninput="S.magName=this.value"></div>
-    <div class="ig"><label class="lbl">크기</label>
-      <div class="range-row"><input type="range" min="20" max="60" value="32" id="mag-size" oninput="S.magSize=+this.value;document.getElementById('msv').textContent=this.value+'px'"><span class="rv" id="msv">32px</span></div>
+    <div class="card-title">배경색</div>
+    <div class="color-row">
+      <div class="swatch"><input type="color" id="bg-color" value="#FAF9F6" oninput="S.bgColor=this.value;draw()"></div>
+      <span style="font-size:12px;color:#aaa">카드 배경 (기본 #FAF9F6)</span>
     </div>
-    <div class="ig"><label class="lbl">색상</label>
-      <div class="color-row"><div class="swatch"><input type="color" id="mag-color" value="#ffffff" oninput="S.magColor=this.value"></div><span style="font-size:12px;color:#aaa">우하단 고정</span></div>
+  </div>
+  <div class="card">
+    <div class="card-title">매거진 시그니처</div>
+
+    <!-- 심볼 / 텍스트 선택 -->
+    <div class="ig">
+      <div class="btn-group">
+        <button class="btn-opt active" onclick="setSigType(this,'text')" data-st="text">텍스트</button>
+        <button class="btn-opt" onclick="setSigType(this,'symbol')" data-st="symbol">심볼 이미지</button>
+      </div>
     </div>
-    <div class="ig" style="margin-bottom:0"><label class="lbl">불투명도</label>
-      <div class="range-row"><input type="range" min="10" max="100" value="70" id="mag-opacity" oninput="S.magOpacity=+this.value;document.getElementById('mov').textContent=this.value+'%'"><span class="rv" id="mov">70%</span></div>
+
+    <!-- 텍스트 시그니처 -->
+    <div id="sig-text-wrap">
+      <div class="ig"><label class="lbl">이름</label><input class="inp" id="mag-name" value="tff.office" oninput="S.magName=this.value"></div>
+      <div class="ig"><label class="lbl">크기</label>
+        <div class="range-row"><input type="range" min="16" max="56" value="28" id="mag-size" oninput="S.magSize=+this.value;v('msv').textContent=this.value+'px'"><span class="rv" id="msv">28px</span></div>
+      </div>
+      <div class="ig"><label class="lbl">색상</label>
+        <div class="color-row"><div class="swatch"><input type="color" id="mag-color" value="#2B2B2C" oninput="S.magColor=this.value"></div></div>
+      </div>
+    </div>
+
+    <!-- 심볼 이미지 시그니처 -->
+    <div id="sig-symbol-wrap" style="display:none">
+      <div class="ig">
+        <div style="border:2px dashed #e8e8e8;border-radius:9px;padding:14px;text-align:center;cursor:pointer;color:#ccc;font-size:12px;background:#fafafa;display:flex;align-items:center;justify-content:center;gap:10px" onclick="v('sym-fi').click()" id="sym-upload-btn">
+          <span style="font-size:20px">🔣</span>
+          <span>심볼 이미지 업로드<br><span style="font-size:10px;color:#ddd">PNG 투명배경 권장</span></span>
+        </div>
+        <input type="file" id="sym-fi" style="display:none" accept="image/*" onchange="loadSymbol(this)">
+      </div>
+      <div class="ig"><label class="lbl">심볼 크기</label>
+        <div class="range-row"><input type="range" min="40" max="300" value="120" id="sym-size" oninput="S.symSize=+this.value;v('ssv').textContent=this.value+'px';draw()"><span class="rv" id="ssv">120px</span></div>
+      </div>
+    </div>
+
+    <!-- 공통: 표시 여부 + 투명도 -->
+    <div class="sep"></div>
+    <div class="toggle-row">
+      <span class="toggle-label">시그니처 표시</span>
+      <label class="sw"><input type="checkbox" id="mag-show" checked onchange="S.magShow=this.checked;draw()"><span class="sl"></span></label>
+    </div>
+    <div class="ig" style="margin-top:10px"><label class="lbl">투명도</label>
+      <div class="range-row"><input type="range" min="0" max="100" value="65" id="mag-opacity" oninput="S.magOpacity=+this.value;v('mov').textContent=this.value+'%';draw()"><span class="rv" id="mov">65%</span></div>
     </div>
   </div>
   <div class="card">
     <div class="card-title">기본 폰트</div>
     <select class="inp" id="global-font" onchange="S.globalFont=this.value">
       <option value="Pretendard Variable">Pretendard</option>
-      <option value="'Apple SD Gothic Neo', sans-serif">Apple SD Gothic Neo</option>
-      <option value="'Noto Sans KR', sans-serif">Noto Sans KR</option>
+      <option value="'Apple SD Gothic Neo',sans-serif">Apple SD Gothic Neo</option>
+      <option value="'Noto Sans KR',sans-serif">Noto Sans KR</option>
     </select>
   </div>
   <button class="exp-btn" onclick="go('slides');addIfEmpty()">슬라이드 만들기 →</button>
@@ -121,14 +163,14 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
 
 <!-- 편집 -->
 <div class="section" id="tab-editor">
-  <div id="ed-empty" class="empty-state"><div style="font-size:36px;margin-bottom:12px">🖼</div><p style="font-size:14px">슬라이드 탭에서<br>편집할 슬라이드를 선택하세요</p></div>
+  <div id="ed-empty" class="empty-state"><div style="font-size:32px;margin-bottom:10px">🖼</div><p>슬라이드 탭에서<br>편집할 슬라이드를 선택하세요</p></div>
   <div id="ed-content" style="display:none">
     <div class="editor-hdr">
       <button class="back-btn" onclick="go('slides')">←</button>
       <div class="editor-hdr-title" id="ed-title">슬라이드 1</div>
     </div>
 
-    <!-- 미리보기 + 크롭 인터랙션 -->
+    <!-- 미리보기 -->
     <div class="preview-wrap">
       <div class="crop-wrap" id="crop-wrap">
         <canvas id="cv"></canvas>
@@ -136,21 +178,39 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
       </div>
     </div>
 
+    <!-- 레이아웃 -->
+    <div class="card">
+      <div class="card-title">레이아웃</div>
+      <div class="layout-grid">
+        <button class="layout-btn active" onclick="setLayout(this,'overlay')" data-l="overlay">
+          <div class="layout-icon">🌆</div>
+          오버레이<br><span style="font-size:10px;opacity:.7">이미지 위 텍스트</span>
+        </button>
+        <button class="layout-btn" onclick="setLayout(this,'bottom')" data-l="bottom">
+          <div class="layout-icon">📄</div>
+          하단 분리<br><span style="font-size:10px;opacity:.7">이미지+텍스트 분리</span>
+        </button>
+        <button class="layout-btn" onclick="setLayout(this,'frame')" data-l="frame">
+          <div class="layout-icon">🖼</div>
+          액자형<br><span style="font-size:10px;opacity:.7">기울어진 사진 느낌</span>
+        </button>
+        <button class="layout-btn" onclick="setLayout(this,'wide')" data-l="wide">
+          <div class="layout-icon">🎞</div>
+          가로형<br><span style="font-size:10px;opacity:.7">가로 이미지 원비율</span>
+        </button>
+      </div>
+    </div>
+
     <!-- 이미지 -->
     <div class="card">
       <div class="card-title">이미지</div>
-      <div class="img-up" onclick="document.getElementById('fi').click()">
-        <div style="font-size:26px;margin-bottom:6px">📷</div>
-        <div>탭해서 이미지 업로드</div>
-        <div style="font-size:11px;margin-top:3px;color:#ccc">JPG · PNG · WebP</div>
+      <div style="border:2px dashed #e8e8e8;border-radius:9px;padding:16px;text-align:center;cursor:pointer;color:#ccc;font-size:12px;background:#fafafa" onclick="v('fi').click()">
+        <div style="font-size:22px;margin-bottom:4px">📷</div>탭해서 업로드
       </div>
       <input type="file" id="fi" style="display:none" accept="image/*" onchange="loadImg(this)">
-      <div class="ig" style="margin-top:12px;margin-bottom:0">
-        <label class="lbl">이미지 크기 (줌)</label>
-        <div class="range-row">
-          <input type="range" min="50" max="300" value="100" step="1" id="s-zoom" oninput="document.getElementById('zmv').textContent=this.value+'%';onZoom()">
-          <span class="rv" id="zmv">100%</span>
-        </div>
+      <div class="ig" style="margin-top:10px">
+        <label class="lbl">줌</label>
+        <div class="range-row"><input type="range" min="30" max="300" value="100" step="1" id="s-zoom" oninput="v('zmv').textContent=this.value+'%';onZoom()"><span class="rv" id="zmv">100%</span></div>
       </div>
       <button class="reset-btn" onclick="resetCrop()">↺ 위치·크기 초기화</button>
     </div>
@@ -158,19 +218,18 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
     <!-- 컴포넌트 -->
     <div class="card">
       <div class="card-title">컴포넌트</div>
-      <div class="toggle-row"><span class="toggle-label">가로형 이미지 레이아웃</span><label class="sw"><input type="checkbox" id="t-wide" onchange="sync();draw()"><span class="sl"></span></label></div>
-      <div class="toggle-row"><span class="toggle-label">카피 (주 텍스트)</span><label class="sw"><input type="checkbox" id="t-copy" checked onchange="sync();draw()"><span class="sl"></span></label></div>
-      <div class="toggle-row"><span class="toggle-label">설명문 (중)</span><label class="sw"><input type="checkbox" id="t-desc" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
-      <div class="toggle-row"><span class="toggle-label">각주 (소)</span><label class="sw"><input type="checkbox" id="t-foot" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
-      <div class="toggle-row"><span class="toggle-label">슬라이드 번호</span><label class="sw"><input type="checkbox" id="t-num" onchange="sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">카피</div></div><label class="sw"><input type="checkbox" id="t-copy" checked onchange="sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">설명문 (중)</div></div><label class="sw"><input type="checkbox" id="t-desc" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">각주 (소)</div></div><label class="sw"><input type="checkbox" id="t-foot" onchange="showHide();sync();draw()"><span class="sl"></span></label></div>
+      <div class="toggle-row"><div><div class="toggle-label">슬라이드 번호</div></div><label class="sw"><input type="checkbox" id="t-num" onchange="sync();draw()"><span class="sl"></span></label></div>
     </div>
 
     <!-- 텍스트 -->
     <div class="card">
-      <div class="card-title">텍스트 입력</div>
+      <div class="card-title">텍스트</div>
       <div class="ig"><label class="lbl">카피</label><textarea class="inp" id="i-copy" rows="2" placeholder="짧고 강렬하게" oninput="sync();draw()"></textarea></div>
       <div class="ig" id="g-desc" style="display:none"><label class="lbl">설명문 (중)</label><textarea class="inp" id="i-desc" rows="3" placeholder="부연 설명" oninput="sync();draw()"></textarea></div>
-      <div class="ig" id="g-foot" style="display:none;margin-bottom:0"><label class="lbl">각주 (소)</label><input class="inp" id="i-foot" placeholder="출처·각주 등 작은 텍스트" oninput="sync();draw()"></div>
+      <div class="ig" id="g-foot" style="display:none"><label class="lbl">각주 (소)</label><input class="inp" id="i-foot" placeholder="출처·각주" oninput="sync();draw()"></div>
     </div>
 
     <!-- 스타일 -->
@@ -179,9 +238,9 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
       <div class="row2">
         <div><label class="lbl">폰트</label>
           <select class="inp" id="s-font" onchange="sync();draw()">
-            <option value="global">기본 폰트</option>
+            <option value="global">기본</option>
             <option value="Pretendard Variable">Pretendard</option>
-            <option value="'Apple SD Gothic Neo'">Apple SD Neo</option>
+            <option value="'Apple SD Gothic Neo'">Apple SD</option>
             <option value="serif">Serif</option>
           </select>
         </div>
@@ -190,39 +249,41 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic
             <option value="52">작게</option>
             <option value="68">보통</option>
             <option value="76" selected>크게</option>
-            <option value="104">매우 크게</option>
+            <option value="100">매우 크게</option>
           </select>
         </div>
       </div>
       <div class="ig"><label class="lbl">텍스트 색상</label>
-        <div class="color-row"><div class="swatch"><input type="color" id="s-color" value="#ffffff" onchange="sync();draw()"></div><span style="font-size:12px;color:#aaa">카피·설명문·각주 공통</span></div>
+        <div class="color-row"><div class="swatch"><input type="color" id="s-color" value="#111111" onchange="sync();draw()"></div><span style="font-size:11px;color:#bbb">카피·설명문·각주</span></div>
       </div>
       <div class="sep"></div>
-      <div class="ig"><label class="lbl">자간 (letter-spacing)</label>
-        <div class="range-row"><input type="range" min="-10" max="40" value="0" step="1" id="s-tracking" oninput="document.getElementById('trv').textContent=this.value+'px';sync();draw()"><span class="rv" id="trv">0px</span></div>
+      <div class="ig"><label class="lbl">자간</label>
+        <div class="range-row"><input type="range" min="-10" max="40" value="0" step="1" id="s-tracking" oninput="v('trv').textContent=this.value+'px';sync();draw()"><span class="rv" id="trv">0px</span></div>
       </div>
       <div class="ig"><label class="lbl">카피 행간</label>
-        <div class="range-row"><input type="range" min="80" max="200" value="125" step="1" id="s-lh-copy" oninput="document.getElementById('lhcv').textContent=(this.value/100).toFixed(2);sync();draw()"><span class="rv" id="lhcv">1.25</span></div>
+        <div class="range-row"><input type="range" min="80" max="200" value="125" step="1" id="s-lh-copy" oninput="v('lhcv').textContent=(this.value/100).toFixed(2);sync();draw()"><span class="rv" id="lhcv">1.25</span></div>
       </div>
-      <div class="ig" style="margin-bottom:0"><label class="lbl">설명문 행간</label>
-        <div class="range-row"><input type="range" min="80" max="200" value="145" step="1" id="s-lh-desc" oninput="document.getElementById('lhdv').textContent=(this.value/100).toFixed(2);sync();draw()"><span class="rv" id="lhdv">1.45</span></div>
+      <div class="ig"><label class="lbl">설명문 행간</label>
+        <div class="range-row"><input type="range" min="80" max="200" value="145" step="1" id="s-lh-desc" oninput="v('lhdv').textContent=(this.value/100).toFixed(2);sync();draw()"><span class="rv" id="lhdv">1.45</span></div>
       </div>
-      <div class="sep"></div>
-      <div class="ig"><label class="lbl">오버레이 종류</label>
-        <div class="btn-group">
-          <button class="btn-opt active" onclick="setOvType(this,'gradient')" data-v="gradient">그라디언트</button>
-          <button class="btn-opt" onclick="setOvType(this,'solid')" data-v="solid">단색</button>
-          <button class="btn-opt" onclick="setOvType(this,'none')" data-v="none">없음</button>
+      <div class="sep" id="ov-sep"></div>
+      <div id="ov-controls">
+        <div class="ig"><label class="lbl">오버레이 종류</label>
+          <div class="btn-group">
+            <button class="btn-opt active" onclick="setOvType(this,'gradient')" data-v="gradient">그라디언트</button>
+            <button class="btn-opt" onclick="setOvType(this,'solid')" data-v="solid">단색</button>
+            <button class="btn-opt" onclick="setOvType(this,'none')" data-v="none">없음</button>
+          </div>
         </div>
-      </div>
-      <div class="ig" id="ov-color-row" style="display:none"><label class="lbl">오버레이 색상</label>
-        <div class="color-row"><div class="swatch"><input type="color" id="s-ovcolor" value="#000000" onchange="sync();draw()"></div></div>
-      </div>
-      <div class="ig"><label class="lbl">오버레이 강도</label>
-        <div class="range-row"><input type="range" min="0" max="95" value="55" id="s-opacity" oninput="document.getElementById('opv').textContent=this.value+'%';sync();draw()"><span class="rv" id="opv">55%</span></div>
-      </div>
-      <div class="ig" style="margin-bottom:0"><label class="lbl">오버레이 시작 위치</label>
-        <div class="range-row"><input type="range" min="0" max="100" value="45" id="s-ovstart" oninput="document.getElementById('osv').textContent=this.value+'%';sync();draw()"><span class="rv" id="osv">45%</span></div>
+        <div class="ig" id="ov-color-row" style="display:none"><label class="lbl">오버레이 색상</label>
+          <div class="color-row"><div class="swatch"><input type="color" id="s-ovcolor" value="#000000" onchange="sync();draw()"></div></div>
+        </div>
+        <div class="ig"><label class="lbl">오버레이 강도</label>
+          <div class="range-row"><input type="range" min="0" max="95" value="55" id="s-opacity" oninput="v('opv').textContent=this.value+'%';sync();draw()"><span class="rv" id="opv">55%</span></div>
+        </div>
+        <div class="ig"><label class="lbl">오버레이 시작 위치</label>
+          <div class="range-row"><input type="range" min="0" max="100" value="45" id="s-ovstart" oninput="v('osv').textContent=this.value+'%';sync();draw()"><span class="rv" id="osv">45%</span></div>
+        </div>
       </div>
     </div>
 
@@ -236,7 +297,10 @@ const MAG_FONT="'Barlow Condensed','Arial Narrow',sans-serif";
 const S={
   fmt:{w:1080,h:1080,r:'1:1'},
   globalFont:'Pretendard Variable',
-  magName:'tff.office', magSize:32, magColor:'#ffffff', magOpacity:70,
+  bgColor:'#FAF9F6',
+  magName:'tff.office', magSize:28, magColor:'#2B2B2C', magOpacity:65, magShow:true,
+  sigType:'text', // 'text' | 'symbol'
+  symEl:null, symSize:120,
   slides:[], cur:null,
 };
 
@@ -245,16 +309,35 @@ function mkSlide(name){
     id:Date.now()+Math.random(), name,
     img:null, imgEl:null,
     copy:'', desc:'', foot:'',
-    showCopy:true, showDesc:false, showFoot:false, showNum:false, wide:false,
-    font:'global', csize:76, textColor:'#ffffff',
+    showCopy:true, showDesc:false, showFoot:false, showNum:false,
+    layout:'overlay', // overlay | bottom | frame | wide
+    font:'global', csize:76, textColor:'#111111',
     tracking:0, lhCopy:1.25, lhDesc:1.45,
     ovType:'gradient', ovColor:'#000000', opacity:55, ovStart:45,
-    // 크롭 상태
     cropX:0, cropY:0, cropZoom:1,
   };
 }
+function setSigType(btn, type){
+  document.querySelectorAll('[data-st]').forEach(b=>b.classList.toggle('active',b.dataset.st===type));
+  S.sigType=type;
+  v('sig-text-wrap').style.display=type==='text'?'block':'none';
+  v('sig-symbol-wrap').style.display=type==='symbol'?'block':'none';
+  draw();
+}
+function loadSymbol(inp){
+  const f=inp.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{S.symEl=img; draw();
+      // 업로드 버튼 미리보기
+      v('sym-upload-btn').innerHTML=`<img src="${e.target.result}" style="height:40px;object-fit:contain;border-radius:4px"><span style="font-size:12px;color:#aaa">변경하려면 탭</span>`;
+    };
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(f);
+}
 
-function addSlide(name){
   const n=name||(S.slides.length===0?'표지':`슬라이드 ${S.slides.length+1}`);
   S.slides.push(mkSlide(n));
   renderList();
@@ -262,17 +345,16 @@ function addSlide(name){
 function addIfEmpty(){if(!S.slides.length)addSlide();}
 
 function renderList(){
-  document.getElementById('slide-list').innerHTML=S.slides.map((s,i)=>`
+  v('slide-list').innerHTML=S.slides.map((s,i)=>`
     <div class="slide-item ${S.cur?.id===s.id?'active':''}" onclick="selSlide(${i})">
       <div class="slide-num">${i+1}</div>
       <div class="slide-info">
         <div class="slide-title-txt">${s.name}</div>
-        <div class="slide-sub">${s.copy?s.copy.slice(0,22)+(s.copy.length>22?'…':''):'텍스트 없음'}</div>
+        <div class="slide-sub">${s.copy?s.copy.slice(0,20)+(s.copy.length>20?'…':''):'텍스트 없음'}</div>
       </div>
       <div class="slide-thumb">${s.img?`<img src="${s.img}">`:'🖼'}</div>
     </div>`).join('');
 }
-
 function selSlide(i){S.cur=S.slides[i];go('editor');loadEditor();}
 function v(id){return document.getElementById(id);}
 
@@ -283,7 +365,6 @@ function loadEditor(){
   v('ed-title').textContent=S.cur.name;
   const s=S.cur;
   v('i-copy').value=s.copy; v('i-desc').value=s.desc; v('i-foot').value=s.foot;
-  v('t-wide').checked=s.wide;
   v('t-copy').checked=s.showCopy; v('t-desc').checked=s.showDesc;
   v('t-foot').checked=s.showFoot; v('t-num').checked=s.showNum;
   v('s-font').value=s.font; v('s-csize').value=s.csize; v('s-color').value=s.textColor;
@@ -293,16 +374,30 @@ function loadEditor(){
   v('s-opacity').value=s.opacity; v('opv').textContent=s.opacity+'%';
   v('s-ovstart').value=s.ovStart; v('osv').textContent=s.ovStart+'%';
   v('s-ovcolor').value=s.ovColor||'#000000';
-  const zPct=Math.round(s.cropZoom*100);
-  v('s-zoom').value=zPct; v('zmv').textContent=zPct+'%';
+  const zp=Math.round(s.cropZoom*100); v('s-zoom').value=zp; v('zmv').textContent=zp+'%';
   document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===s.ovType));
+  document.querySelectorAll('[data-l]').forEach(b=>b.classList.toggle('active',b.dataset.l===s.layout));
   v('ov-color-row').style.display=s.ovType==='solid'?'block':'none';
+  // 오버레이 컨트롤은 overlay 레이아웃에서만
+  const showOv=s.layout==='overlay'||s.layout==='frame';
+  v('ov-controls').style.display=showOv?'block':'none';
+  v('ov-sep').style.display=showOv?'block':'none';
   showHide(); draw();
 }
 
 function showHide(){
   v('g-desc').style.display=v('t-desc').checked?'block':'none';
   v('g-foot').style.display=v('t-foot').checked?'block':'none';
+}
+
+function setLayout(btn, layout){
+  document.querySelectorAll('[data-l]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(S.cur){S.cur.layout=layout; sync();}
+  const showOv=layout==='overlay'||layout==='frame';
+  v('ov-controls').style.display=showOv?'block':'none';
+  v('ov-sep').style.display=showOv?'block':'none';
+  draw();
 }
 
 function setOvType(btn,val){
@@ -317,7 +412,6 @@ function sync(){
   if(!S.cur)return;
   const s=S.cur;
   s.copy=v('i-copy').value; s.desc=v('i-desc').value; s.foot=v('i-foot').value;
-  s.wide=v('t-wide').checked;
   s.showCopy=v('t-copy').checked; s.showDesc=v('t-desc').checked;
   s.showFoot=v('t-foot').checked; s.showNum=v('t-num').checked;
   s.font=v('s-font').value; s.csize=+v('s-csize').value; s.textColor=v('s-color').value;
@@ -326,8 +420,10 @@ function sync(){
   s.lhDesc=+v('s-lh-desc').value/100;
   s.opacity=+v('s-opacity').value; s.ovStart=+v('s-ovstart').value;
   s.ovColor=v('s-ovcolor').value;
-  const activeOv=document.querySelector('[data-v].active');
-  if(activeOv)s.ovType=activeOv.dataset.v;
+  const ao=document.querySelector('[data-v].active');
+  if(ao)s.ovType=ao.dataset.v;
+  const al=document.querySelector('[data-l].active');
+  if(al)s.layout=al.dataset.l;
 }
 
 function setFmt(btn){
@@ -343,124 +439,80 @@ function loadImg(inp){
   r.onload=e=>{
     if(!S.cur)return;
     const img=new Image();
-    img.onload=()=>{
-      S.cur.img=e.target.result;
-      S.cur.imgEl=img;
-      resetCrop();
-      renderList();
-    };
+    img.onload=()=>{S.cur.img=e.target.result;S.cur.imgEl=img;resetCrop();renderList();};
     img.src=e.target.result;
   };
   r.readAsDataURL(f);
 }
-
 function resetCrop(){
   if(!S.cur)return;
-  S.cur.cropX=0; S.cur.cropY=0; S.cur.cropZoom=1;
-  v('s-zoom').value=100; v('zmv').textContent='100%';
+  S.cur.cropX=0;S.cur.cropY=0;S.cur.cropZoom=1;
+  v('s-zoom').value=100;v('zmv').textContent='100%';
   draw();
 }
-
 function onZoom(){
   if(!S.cur)return;
   S.cur.cropZoom=+v('s-zoom').value/100;
-  clampCrop(S.cur);
   draw();
 }
 
-// 클램핑 없음 — 자유롭게 이동 가능
-function clampCrop(s){ }
-
-// ── 드래그 / 핀치 ────────────────────────────────────────
-const DRAG={active:false, startX:0, startY:0, origX:0, origY:0};
-const PINCH={active:false, startDist:0, origZoom:1};
-
+// ── 드래그/핀치 ───────────────────────────────────────────
+const DRAG={active:false,sx:0,sy:0,ox:0,oy:0};
+const PINCH={active:false,sd:0,oz:1};
 const cw=v('crop-wrap');
 
-function getPos(e){
-  if(e.touches) return{x:e.touches[0].clientX, y:e.touches[0].clientY};
-  return{x:e.clientX, y:e.clientY};
-}
-function getDist(e){
-  const dx=e.touches[0].clientX-e.touches[1].clientX;
-  const dy=e.touches[0].clientY-e.touches[1].clientY;
-  return Math.sqrt(dx*dx+dy*dy);
-}
+function getPos(e){return e.touches?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY};}
+function getDist(e){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;return Math.sqrt(dx*dx+dy*dy);}
 
-cw.addEventListener('mousedown', e=>{
+cw.addEventListener('mousedown',e=>{
   if(!S.cur?.imgEl)return;
-  DRAG.active=true;
-  const p=getPos(e);
-  DRAG.startX=p.x; DRAG.startY=p.y;
-  DRAG.origX=S.cur.cropX; DRAG.origY=S.cur.cropY;
+  DRAG.active=true;const p=getPos(e);
+  DRAG.sx=p.x;DRAG.sy=p.y;DRAG.ox=S.cur.cropX;DRAG.oy=S.cur.cropY;
   e.preventDefault();
 },{passive:false});
-
-cw.addEventListener('touchstart', e=>{
+cw.addEventListener('touchstart',e=>{
   if(!S.cur?.imgEl)return;
   if(e.touches.length===2){
-    DRAG.active=false;
-    PINCH.active=true;
-    PINCH.startDist=getDist(e);
-    PINCH.origZoom=S.cur.cropZoom;
-    e.preventDefault();
-  } else if(e.touches.length===1){
-    DRAG.active=true;
-    const p=getPos(e);
-    DRAG.startX=p.x; DRAG.startY=p.y;
-    DRAG.origX=S.cur.cropX; DRAG.origY=S.cur.cropY;
+    DRAG.active=false;PINCH.active=true;
+    PINCH.sd=getDist(e);PINCH.oz=S.cur.cropZoom;e.preventDefault();
+  }else{
+    DRAG.active=true;const p=getPos(e);
+    DRAG.sx=p.x;DRAG.sy=p.y;DRAG.ox=S.cur.cropX;DRAG.oy=S.cur.cropY;
   }
 },{passive:false});
-
 function onMove(e){
   if(!S.cur)return;
-  const cw=v('crop-wrap');
-  const scale=S.fmt.w/cw.offsetWidth; // 화면→캔버스 좌표 변환
+  const scale=S.fmt.w/(v('crop-wrap').offsetWidth||340);
   if(PINCH.active&&e.touches?.length===2){
-    const d=getDist(e);
-    const z=PINCH.origZoom*(d/PINCH.startDist);
-    S.cur.cropZoom=Math.max(0.5,Math.min(3,z));
-    v('s-zoom').value=Math.round(S.cur.cropZoom*100);
-    v('zmv').textContent=Math.round(S.cur.cropZoom*100)+'%';
-    clampCrop(S.cur); draw();
-    e.preventDefault();
-  } else if(DRAG.active){
+    const d=getDist(e);const z=Math.max(0.3,Math.min(5,PINCH.oz*(d/PINCH.sd)));
+    S.cur.cropZoom=z;v('s-zoom').value=Math.round(z*100);v('zmv').textContent=Math.round(z*100)+'%';
+    draw();if(e.cancelable)e.preventDefault();
+  }else if(DRAG.active){
     const p=getPos(e);
-    const dx=(p.x-DRAG.startX)*scale;
-    const dy=(p.y-DRAG.startY)*scale;
-    S.cur.cropX=DRAG.origX+dx;
-    S.cur.cropY=DRAG.origY+dy;
-    clampCrop(S.cur); draw();
-    if(e.cancelable)e.preventDefault();
+    S.cur.cropX=DRAG.ox+(p.x-DRAG.sx)*scale;
+    S.cur.cropY=DRAG.oy+(p.y-DRAG.sy)*scale;
+    draw();if(e.cancelable)e.preventDefault();
   }
 }
+document.addEventListener('mousemove',onMove);
+document.addEventListener('touchmove',onMove,{passive:false});
+function onEnd(){DRAG.active=false;PINCH.active=false;}
+document.addEventListener('mouseup',onEnd);
+document.addEventListener('touchend',onEnd);
 
-document.addEventListener('mousemove', onMove);
-document.addEventListener('touchmove', onMove,{passive:false});
-
-function onEnd(){DRAG.active=false; PINCH.active=false;}
-document.addEventListener('mouseup', onEnd);
-document.addEventListener('touchend', onEnd);
-
-// 힌트 자동 숨김
 let hintTimer;
 function showHint(){
-  const h=v('crop-hint');
-  h.classList.remove('hide');
+  v('crop-hint').classList.remove('hide');
   clearTimeout(hintTimer);
-  hintTimer=setTimeout(()=>h.classList.add('hide'),2500);
+  hintTimer=setTimeout(()=>v('crop-hint').classList.add('hide'),2500);
 }
 
-// ── 그리기 유틸 ───────────────────────────────────────────
+// ── 유틸 ──────────────────────────────────────────────────
 function wrap(ctx,text,maxW){
   const res=[];
   text.split('\n').forEach(part=>{
     let ln='';
-    for(const ch of part){
-      const t=ln+ch;
-      if(ctx.measureText(t).width>maxW&&ln){res.push(ln);ln=ch;}
-      else ln=t;
-    }
+    for(const ch of part){const t=ln+ch;if(ctx.measureText(t).width>maxW&&ln){res.push(ln);ln=ch;}else ln=t;}
     if(ln)res.push(ln);
   });
   return res.length?res:[''];
@@ -468,130 +520,125 @@ function wrap(ctx,text,maxW){
 function hexRgb(hex){return{r:parseInt(hex.slice(1,3),16),g:parseInt(hex.slice(3,5),16),b:parseInt(hex.slice(5,7),16)};}
 function hexAlpha(hex,a){const{r,g,b}=hexRgb(hex);return`rgba(${r},${g},${b},${a})`;}
 
-function drawOverlay(ctx,s,w,h,imgY,imgH){
-  const top=(s.wide&&imgY!=null)?imgY:0;
-  const bottom=(s.wide&&imgY!=null)?imgY+imgH:h;
+// ── 이미지 그리기 ─────────────────────────────────────────
+function placeImg(ctx,imgEl,s,x,y,w,h,cover=true){
+  if(!imgEl)return;
+  ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+  const sc=cover?Math.max(w/imgEl.width,h/imgEl.height)*s.cropZoom:Math.min(w/imgEl.width,h/imgEl.height)*s.cropZoom;
+  const iw=imgEl.width*sc,ih=imgEl.height*sc;
+  const baseX=x+(w-iw)/2+s.cropX;
+  const baseY=y+(h-ih)/2+s.cropY;
+  ctx.drawImage(imgEl,baseX,baseY,iw,ih);
+  ctx.restore();
+}
+
+// ── 오버레이 ──────────────────────────────────────────────
+function drawOverlay(ctx,s,x,y,w,h){
   const ov=s.opacity/100;
   if(s.ovType==='gradient'){
-    const sy=top+(bottom-top)*(s.ovStart/100);
-    const g=ctx.createLinearGradient(0,sy,0,bottom);
-    g.addColorStop(0,'rgba(0,0,0,0)');
-    g.addColorStop(1,`rgba(0,0,0,${ov})`);
-    ctx.fillStyle=g; ctx.fillRect(0,sy,w,bottom-sy);
+    const sy=y+h*(s.ovStart/100);
+    const g=ctx.createLinearGradient(0,sy,0,y+h);
+    g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${ov})`);
+    ctx.fillStyle=g;ctx.fillRect(x,sy,w,y+h-sy);
   }else if(s.ovType==='solid'){
     const c=hexRgb(s.ovColor||'#000000');
-    ctx.fillStyle=`rgba(${c.r},${c.g},${c.b},${ov})`;
-    ctx.fillRect(0,top,w,bottom-top);
+    ctx.fillStyle=`rgba(${c.r},${c.g},${c.b},${ov})`;ctx.fillRect(x,y,w,h);
   }
 }
 
-function drawMag(ctx,s,w,h,PAD,isWide){
-  ctx.letterSpacing='1px';
-  ctx.font=`600 ${S.magSize*2}px ${MAG_FONT}`;
-  ctx.textAlign='right'; ctx.globalAlpha=1;
-  ctx.fillStyle=isWide?hexAlpha('#111111',S.magOpacity/100):hexAlpha(S.magColor,S.magOpacity/100);
-  ctx.fillText(S.magName,w-PAD,h-PAD+S.magSize*0.8);
-  ctx.textAlign='left'; ctx.letterSpacing='0px';
+// ── 매거진 시그니처 ───────────────────────────────────────
+function drawMag(ctx,s,W,H,PAD,dark){
+  if(!S.magShow)return;
+  ctx.save();
+  ctx.globalAlpha=S.magOpacity/100;
+  if(S.sigType==='symbol'&&S.symEl){
+    // 심볼 이미지: 우하단 고정
+    const sz=S.symSize*2; // 고해상도
+    const sx=W-PAD-sz;
+    const sy=H-PAD-sz;
+    ctx.drawImage(S.symEl,sx,sy,sz,sz);
+  } else {
+    // 텍스트 시그니처
+    ctx.letterSpacing='0.5px';
+    ctx.font=`600 ${S.magSize*2}px ${MAG_FONT}`;
+    ctx.textAlign='right';
+    ctx.fillStyle=dark?'#111111':S.magColor;
+    ctx.fillText(S.magName,W-PAD,H-PAD+S.magSize*0.7);
+  }
+  ctx.restore();
 }
 
-function drawText(ctx,s,w,h,PAD,fontFam){
-  const tc=s.textColor||'#ffffff';
-  const lhC=s.csize*(s.lhCopy||1.25);
-  const descSz=Math.round(s.csize*0.62);
-  const footSz=Math.round(s.csize*0.37);
-  const lhD=descSz*(s.lhDesc||1.45);
-  ctx.textAlign='left';
-  const footY=h-PAD+footSz*0.3;
-  let curY=h-PAD*2;
-  if(s.showFoot&&s.foot)curY-=footSz*1.6;
-  if(s.showCopy&&s.copy){
-    ctx.font=`700 ${s.csize}px ${fontFam}`;
-    const lines=wrap(ctx,s.copy,w-PAD*2);
-    const sy=curY-(lines.length-1)*lhC;
-    ctx.fillStyle=tc; ctx.globalAlpha=1;
-    lines.forEach((ln,i)=>ctx.fillText(ln,PAD,sy+i*lhC));
-    curY=sy-lhC*0.4;
-  }
-  if(s.showDesc&&s.desc){
-    ctx.font=`700 ${descSz}px ${fontFam}`;
-    const lines=wrap(ctx,s.desc,w-PAD*2);
-    const sy=curY-(lines.length-1)*lhD;
-    ctx.fillStyle=tc; ctx.globalAlpha=0.92;
-    lines.forEach((ln,i)=>ctx.fillText(ln,PAD,sy+i*lhD));
-    ctx.globalAlpha=1;
-  }
-  if(s.showFoot&&s.foot){
-    ctx.font=`400 ${footSz}px ${fontFam}`;
-    ctx.fillStyle=tc; ctx.globalAlpha=1;
-    ctx.fillText(s.foot,PAD,footY);
-  }
-  if(s.showNum){
-    const idx=S.slides.findIndex(x=>x.id===s.id)+1;
-    ctx.font=`400 ${footSz}px ${fontFam}`;
-    ctx.fillStyle=tc; ctx.globalAlpha=0.5; ctx.textAlign='right';
-    ctx.fillText(`${idx} / ${S.slides.length}`,w-PAD,PAD);
-    ctx.textAlign='left'; ctx.globalAlpha=1;
-  }
-}
-
-function drawTextWide(ctx,s,w,h,imgY,imgH,PAD,fontFam){
+// ── 텍스트 블록 ───────────────────────────────────────────
+function drawTextBlock(ctx,s,PAD,areaX,areaY,areaW,areaH,dark,stickBottom=true){
+  const fontFam=s.font==='global'?S.globalFont:s.font;
+  ctx.save();ctx.letterSpacing=(s.tracking||0)+'px';
   const tc=s.textColor||'#111111';
   const lhC=s.csize*(s.lhCopy||1.25);
   const descSz=Math.round(s.csize*0.62);
   const footSz=Math.round(s.csize*0.37);
   const lhD=descSz*(s.lhDesc||1.45);
-  const textTop=imgY+imgH, textH=h-textTop;
-  ctx.font=`700 ${s.csize}px ${fontFam}`;
-  const copyLines=s.showCopy&&s.copy?wrap(ctx,s.copy,w-PAD*2):[];
-  ctx.font=`700 ${descSz}px ${fontFam}`;
-  const descLines=s.showDesc&&s.desc?wrap(ctx,s.desc,w-PAD*2):[];
-  const totalH=(copyLines.length>0?copyLines.length*lhC:0)+(descLines.length>0?descLines.length*lhD+lhC*0.3:0)+(s.showFoot&&s.foot?footSz*1.8:0);
-  let curY=textTop+(textH-totalH)/2+(copyLines.length>0?s.csize:descSz);
-  if(descLines.length>0){
-    ctx.font=`700 ${descSz}px ${fontFam}`;
-    ctx.fillStyle=tc; ctx.globalAlpha=0.92; ctx.textAlign='left';
-    descLines.forEach((ln,i)=>ctx.fillText(ln,PAD,curY+i*lhD));
-    curY+=descLines.length*lhD+lhC*0.3; ctx.globalAlpha=1;
-  }
-  if(copyLines.length>0){
+  ctx.textAlign='left';
+
+  if(stickBottom){
+    // 하단 고정 쌓기 (오버레이 레이아웃)
+    const footY=areaY+areaH-PAD*0.5+footSz*0.3;
+    let curY=areaY+areaH-PAD*0.8;
+    if(s.showFoot&&s.foot)curY-=footSz*1.6;
+    if(s.showCopy&&s.copy){
+      ctx.font=`700 ${s.csize}px ${fontFam}`;
+      const lines=wrap(ctx,s.copy,areaW-PAD*2);
+      const sy=curY-(lines.length-1)*lhC;
+      ctx.fillStyle=tc;ctx.globalAlpha=1;
+      lines.forEach((ln,i)=>ctx.fillText(ln,areaX+PAD,sy+i*lhC));
+      curY=sy-lhC*0.4;
+    }
+    if(s.showDesc&&s.desc){
+      ctx.font=`700 ${descSz}px ${fontFam}`;
+      const lines=wrap(ctx,s.desc,areaW-PAD*2);
+      const sy=curY-(lines.length-1)*lhD;
+      ctx.fillStyle=tc;ctx.globalAlpha=0.92;
+      lines.forEach((ln,i)=>ctx.fillText(ln,areaX+PAD,sy+i*lhD));
+      ctx.globalAlpha=1;
+    }
+    if(s.showFoot&&s.foot){
+      ctx.font=`400 ${footSz}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=1;
+      ctx.fillText(s.foot,areaX+PAD,footY);
+    }
+  } else {
+    // 흰 영역 세로 중앙 정렬 (bottom / wide 레이아웃)
     ctx.font=`700 ${s.csize}px ${fontFam}`;
-    ctx.fillStyle=tc; ctx.globalAlpha=1; ctx.textAlign='left';
-    copyLines.forEach((ln,i)=>ctx.fillText(ln,PAD,curY+i*lhC));
-    curY+=copyLines.length*lhC+footSz*0.8;
-  }
-  if(s.showFoot&&s.foot){
-    ctx.font=`400 ${footSz}px ${fontFam}`;
-    ctx.fillStyle=tc; ctx.globalAlpha=1; ctx.textAlign='left';
-    ctx.fillText(s.foot,PAD,curY);
+    const copyLines=s.showCopy&&s.copy?wrap(ctx,s.copy,areaW-PAD*2):[];
+    ctx.font=`700 ${descSz}px ${fontFam}`;
+    const descLines=s.showDesc&&s.desc?wrap(ctx,s.desc,areaW-PAD*2):[];
+    const totalH=(descLines.length>0?descLines.length*lhD+lhC*0.3:0)+(copyLines.length>0?copyLines.length*lhC:0)+(s.showFoot&&s.foot?footSz*1.8:0);
+    let curY=areaY+(areaH-totalH)/2+(descLines.length>0?descSz:s.csize);
+    if(descLines.length>0){
+      ctx.font=`700 ${descSz}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=0.9;
+      descLines.forEach((ln,i)=>ctx.fillText(ln,areaX+PAD,curY+i*lhD));
+      curY+=descLines.length*lhD+lhC*0.3;ctx.globalAlpha=1;
+    }
+    if(copyLines.length>0){
+      ctx.font=`700 ${s.csize}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=1;
+      copyLines.forEach((ln,i)=>ctx.fillText(ln,areaX+PAD,curY+i*lhC));
+      curY+=copyLines.length*lhC+footSz*0.9;
+    }
+    if(s.showFoot&&s.foot){
+      ctx.font=`400 ${footSz}px ${fontFam}`;
+      ctx.fillStyle=tc;ctx.globalAlpha=1;
+      ctx.fillText(s.foot,areaX+PAD,curY);
+    }
   }
   if(s.showNum){
     const idx=S.slides.findIndex(x=>x.id===s.id)+1;
     ctx.font=`400 ${footSz}px ${fontFam}`;
-    ctx.fillStyle='#111'; ctx.globalAlpha=0.4; ctx.textAlign='right';
-    ctx.fillText(`${idx} / ${S.slides.length}`,w-PAD,textTop+PAD);
-    ctx.textAlign='left'; ctx.globalAlpha=1;
+    ctx.fillStyle=dark?'#111':tc;ctx.globalAlpha=0.4;ctx.textAlign='right';
+    ctx.fillText(`${idx}/${S.slides.length}`,areaX+areaW-PAD,areaY+PAD);
+    ctx.globalAlpha=1;
   }
-}
-
-// ── 이미지 그리기 (크롭 적용) ────────────────────────────
-function drawImage(ctx, imgEl, s, w, h){
-  if(!imgEl)return{imgY:0,imgH:h};
-  if(s.wide){
-    // 가로형: 원본 비율 유지, 가로 꽉 채움, 세로 중앙
-    const sc=(w/imgEl.width)*s.cropZoom;
-    const iw=imgEl.width*sc, ih=imgEl.height*sc;
-    const baseY=(h-ih)/2;
-    const imgY=Math.round(baseY);
-    const imgH=Math.round(ih);
-    ctx.drawImage(imgEl, (w-iw)/2+s.cropX, imgY+s.cropY, iw, ih);
-    return{imgY, imgH};
-  } else {
-    // 일반: cover + 크롭
-    const sc=Math.max(w/imgEl.width, h/imgEl.height)*s.cropZoom;
-    const iw=imgEl.width*sc, ih=imgEl.height*sc;
-    ctx.drawImage(imgEl, (w-iw)/2+s.cropX, (h-ih)/2+s.cropY, iw, ih);
-    return{imgY:0, imgH:h};
-  }
+  ctx.restore();
 }
 
 // ── 메인 draw ─────────────────────────────────────────────
@@ -599,53 +646,122 @@ function draw(){
   if(!S.cur)return;
   const s=S.cur;
   const{w,h}=S.fmt;
-  const cv=v('cv'), cw=v('crop-wrap');
-  cv.width=w; cv.height=h;
+  const cv=v('cv'),cw=v('crop-wrap');
+  cv.width=w;cv.height=h;
   const dw=cw.offsetWidth||340;
-  cv.style.width=dw+'px'; cv.style.height=(dw*h/w)+'px';
+  cv.style.width=dw+'px';cv.style.height=(dw*h/w)+'px';
   const ctx=cv.getContext('2d');
   ctx.clearRect(0,0,w,h);
   const PAD=72;
-  const fontFam=s.font==='global'?S.globalFont:s.font;
-  ctx.letterSpacing=(s.tracking||0)+'px';
+  const bg=S.bgColor||'#FAF9F6';
 
-  if(s.wide){
-    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h);
-    const{imgY,imgH}=drawImage(ctx,s.imgEl,s,w,h);
-    drawOverlay(ctx,s,w,h,imgY,imgH);
-    drawTextWide(ctx,s,w,h,imgY,imgH,PAD,fontFam);
-    drawMag(ctx,s,w,h,PAD,true);
-  } else {
-    ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,w,h);
-    drawImage(ctx,s.imgEl,s,w,h);
-    drawOverlay(ctx,s,w,h,null,null);
-    drawText(ctx,s,w,h,PAD,fontFam);
+  if(s.layout==='overlay'){
+    // ── 오버레이: 이미지 꽉 채움 + 텍스트 오버레이 ──
+    ctx.fillStyle='#1a1a1a';ctx.fillRect(0,0,w,h);
+    placeImg(ctx,s.imgEl,s,0,0,w,h,true);
+    drawOverlay(ctx,s,0,0,w,h);
+    drawTextBlock(ctx,s,PAD,0,0,w,h,false,true);
     drawMag(ctx,s,w,h,PAD,false);
+
+  }else if(s.layout==='bottom'){
+    // ── 하단 분리: 이미지 상단, 텍스트 하단 흰 영역 ──
+    ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+    // 비율: 이미지 65%, 텍스트 35%
+    const imgH=Math.round(h*0.65);
+    const textY=imgH;
+    const textH=h-imgH;
+    // 이미지 영역
+    ctx.save();ctx.beginPath();ctx.rect(0,0,w,imgH);ctx.clip();
+    placeImg(ctx,s.imgEl,s,0,0,w,imgH,true);
+    ctx.restore();
+    // 경계선 없이 자연스럽게
+    // 텍스트 영역
+    drawTextBlock(ctx,s,PAD,0,textY,w,textH,true,false);
+    drawMag(ctx,s,w,h,PAD,true);
+
+  }else if(s.layout==='frame'){
+    // ── 액자형: 배경 + 기울어진 사진 + 하단 텍스트 ──
+    ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+    // 그림자
+    ctx.save();
+    const angle=-0.04; // 약간 기울기
+    const fw=Math.round(w*0.82);
+    const fh=Math.round(h*0.58);
+    const fx=(w-fw)/2;
+    const fy=Math.round(h*0.05);
+    ctx.translate(w/2,fy+fh/2);
+    ctx.rotate(angle);
+    ctx.shadowColor='rgba(0,0,0,0.18)';
+    ctx.shadowBlur=40;ctx.shadowOffsetX=8;ctx.shadowOffsetY=12;
+    ctx.fillStyle='#fff';ctx.fillRect(-fw/2,-fh/2,fw,fh);
+    ctx.restore();
+    // 이미지 (클리핑)
+    ctx.save();
+    ctx.translate(w/2,fy+fh/2);ctx.rotate(angle);
+    ctx.beginPath();ctx.rect(-fw/2,-fh/2,fw,fh);ctx.clip();
+    // 이미지를 프레임 좌표계로
+    if(s.imgEl){
+      const sc=Math.max(fw/s.imgEl.width,fh/s.imgEl.height)*s.cropZoom;
+      const iw=s.imgEl.width*sc,ih=s.imgEl.height*sc;
+      ctx.drawImage(s.imgEl,-iw/2+s.cropX,-ih/2+s.cropY,iw,ih);
+    }
+    ctx.restore();
+    // 텍스트 (하단)
+    const textY=fy+fh+Math.round(h*0.04);
+    const textH=h-textY-PAD*0.5;
+    drawTextBlock(ctx,s,PAD,0,textY,w,textH,true,false);
+    drawMag(ctx,s,w,h,PAD,true);
+
+  }else if(s.layout==='wide'){
+    // ── 가로형: 배경 + 이미지 원비율 가로꽉 + 하단 텍스트 ──
+    ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+    if(s.imgEl){
+      const imgH=Math.round(s.imgEl.height*(w/s.imgEl.width)*s.cropZoom);
+      const imgY=Math.round(h*0.04)+s.cropY;
+      // 흰 테두리 효과
+      const pad=Math.round(w*0.04);
+      ctx.save();
+      ctx.shadowColor='rgba(0,0,0,0.12)';ctx.shadowBlur=20;ctx.shadowOffsetY=4;
+      ctx.fillStyle='#fff';ctx.fillRect(pad,imgY,w-pad*2,imgH);
+      ctx.restore();
+      ctx.save();ctx.beginPath();ctx.rect(pad,imgY,w-pad*2,imgH);ctx.clip();
+      const sc=(w-pad*2)/s.imgEl.width*s.cropZoom;
+      const iw=s.imgEl.width*sc,ih=s.imgEl.height*sc;
+      ctx.drawImage(s.imgEl,pad+((w-pad*2)-iw)/2+s.cropX,imgY+s.cropY,iw,ih);
+      ctx.restore();
+      drawOverlay(ctx,s,pad,imgY,w-pad*2,imgH);
+      const textY=imgY+imgH+Math.round(h*0.03);
+      const textH=h-textY-PAD*0.5;
+      drawTextBlock(ctx,s,PAD,0,textY,w,textH,true,false);
+    } else {
+      drawTextBlock(ctx,s,PAD,0,h*0.6,w,h*0.35,true,false);
+    }
+    drawMag(ctx,s,w,h,PAD,true);
   }
 }
 
 // ── 내보내기 ──────────────────────────────────────────────
 function exportOne(){
-  sync(); draw();
+  sync();draw();
   setTimeout(()=>{
     const a=document.createElement('a');
     const idx=S.slides.findIndex(x=>x.id===S.cur?.id)+1;
-    a.download=`card_${idx}_${S.fmt.r.replace(':','x')}.png`;
-    a.href=v('cv').toDataURL('image/png'); a.click();
+    a.download=`tff_${idx}_${S.fmt.r.replace(':','x')}.png`;
+    a.href=v('cv').toDataURL('image/png');a.click();
   },300);
 }
 function exportAll(){
   const prev=S.cur;
   S.slides.forEach((sl,i)=>{
     setTimeout(()=>{
-      S.cur=sl; loadEditor();
+      S.cur=sl;loadEditor();
       setTimeout(()=>{
         const a=document.createElement('a');
-        a.download=`card_${i+1}_${S.fmt.r.replace(':','x')}.png`;
-        a.href=v('cv').toDataURL('image/png'); a.click();
-        if(i===S.slides.length-1){S.cur=prev; loadEditor();}
-      },350);
-    },i*700);
+        a.download=`tff_${i+1}_${S.fmt.r.replace(':','x')}.png`;
+        a.href=v('cv').toDataURL('image/png');a.click();
+        if(i===S.slides.length-1){S.cur=prev;loadEditor();}
+      },400);
+    },i*750);
   });
 }
 
@@ -656,7 +772,7 @@ function go(name){
     document.querySelectorAll('.section')[i].classList.toggle('active',n===name);
   });
   if(name==='slides')renderList();
-  if(name==='editor'&&S.cur){draw(); showHint();}
+  if(name==='editor'&&S.cur){draw();showHint();}
 }
 
 addSlide('표지');
